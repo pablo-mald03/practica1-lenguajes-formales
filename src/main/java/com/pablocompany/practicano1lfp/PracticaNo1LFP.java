@@ -4,6 +4,8 @@
 
 package com.pablocompany.practicano1lfp;
 
+import com.pablocompany.practicano1lfp.frontend.MenuPrincipal;
+
 /**
  *
  * @author pablo
@@ -11,6 +13,14 @@ package com.pablocompany.practicano1lfp;
 public class PracticaNo1LFP {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        
+        iniciarAplicacion();
+        
+    }
+    
+    //Metodo que se encarga de inicializar la aplicacion
+    public static void iniciarAplicacion(){
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
     }
 }
