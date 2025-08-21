@@ -5,13 +5,14 @@
 package com.pablocompany.practicano1lfp.frontend;
 
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author pablo
  */
 public class MenuPrincipal extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuPrincipal.class.getName());
 
     /**
@@ -19,13 +20,26 @@ public class MenuPrincipal extends javax.swing.JFrame {
      */
     public MenuPrincipal() {
         initComponents();
-        
+
         this.setLocationRelativeTo(null);
-        
+
         ColocarFondos pintarPanel = new ColocarFondos(this, this.panelPrincipal);
 
         pintarPanel.pintarPaneles("/com/pablocompany/practicano1/target/images/overlay2.png");
-        
+
+    }
+
+    //Metodo que ayuda a poder tomar decisiones en el menu
+    public boolean tomarDecision(String mensaje, String Titulo) {
+        int opcion = JOptionPane.showConfirmDialog(
+                this,
+                mensaje,
+                Titulo,
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        return opcion == JOptionPane.YES_OPTION;
     }
 
     /**
@@ -38,19 +52,156 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         panelPrincipal = new javax.swing.JPanel();
+        panelBarraPrincipal = new javax.swing.JPanel();
+        lblEleccion = new javax.swing.JLabel();
+        lblHome = new javax.swing.JLabel();
+        lblAdmin = new javax.swing.JLabel();
+        lblPerfil = new javax.swing.JLabel();
+        lblElecccionEVT = new javax.swing.JLabel();
+        barraLateral = new javax.swing.JPanel();
+        btnArchivoEntrada = new javax.swing.JButton();
+        btnGenerarReportes = new javax.swing.JButton();
+        btnConfig = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
+        panelBarraPrincipal.setBackground(new java.awt.Color(50, 56, 68));
+        panelBarraPrincipal.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(0, 0, 0)));
+
+        lblHome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/home2.png"))); // NOI18N
+        lblHome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblHome.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblHomeMouseClicked(evt);
+            }
+        });
+
+        lblAdmin.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        lblAdmin.setForeground(new java.awt.Color(255, 255, 255));
+        lblAdmin.setText("Usuario");
+
+        lblElecccionEVT.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        lblElecccionEVT.setForeground(new java.awt.Color(255, 255, 255));
+        lblElecccionEVT.setText("Operacion");
+
+        javax.swing.GroupLayout panelBarraPrincipalLayout = new javax.swing.GroupLayout(panelBarraPrincipal);
+        panelBarraPrincipal.setLayout(panelBarraPrincipalLayout);
+        panelBarraPrincipalLayout.setHorizontalGroup(
+            panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblAdmin)
+                .addGap(460, 460, 460)
+                .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblElecccionEVT, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblHome)
+                .addGap(24, 24, 24))
+        );
+        panelBarraPrincipalLayout.setVerticalGroup(
+            panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
+                .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBarraPrincipalLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblHome)
+                            .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblElecccionEVT, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
+        barraLateral.setBackground(new java.awt.Color(50, 56, 68));
+        barraLateral.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(0, 0, 0)));
+        barraLateral.setForeground(new java.awt.Color(0, 0, 0));
+
+        btnArchivoEntrada.setBackground(new java.awt.Color(50, 56, 68));
+        btnArchivoEntrada.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnArchivoEntrada.setForeground(new java.awt.Color(255, 255, 255));
+        btnArchivoEntrada.setText("Archivo de entrada");
+        btnArchivoEntrada.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 255, 255)));
+        btnArchivoEntrada.setFocusable(false);
+        btnArchivoEntrada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnArchivoEntradaActionPerformed(evt);
+            }
+        });
+
+        btnGenerarReportes.setBackground(new java.awt.Color(50, 56, 68));
+        btnGenerarReportes.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnGenerarReportes.setForeground(new java.awt.Color(255, 255, 255));
+        btnGenerarReportes.setText("Generar Reportes");
+        btnGenerarReportes.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 255, 255)));
+        btnGenerarReportes.setFocusable(false);
+        btnGenerarReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarReportesActionPerformed(evt);
+            }
+        });
+
+        btnConfig.setBackground(new java.awt.Color(50, 56, 68));
+        btnConfig.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnConfig.setForeground(new java.awt.Color(255, 255, 255));
+        btnConfig.setText("Editar Configuracion");
+        btnConfig.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 255, 255)));
+        btnConfig.setFocusable(false);
+        btnConfig.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfigActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout barraLateralLayout = new javax.swing.GroupLayout(barraLateral);
+        barraLateral.setLayout(barraLateralLayout);
+        barraLateralLayout.setHorizontalGroup(
+            barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(barraLateralLayout.createSequentialGroup()
+                .addGap(294, 294, 294)
+                .addComponent(btnArchivoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnGenerarReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(294, Short.MAX_VALUE))
+        );
+        barraLateralLayout.setVerticalGroup(
+            barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(barraLateralLayout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addGroup(barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnArchivoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGenerarReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1557, Short.MAX_VALUE)
+            .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(barraLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 880, Short.MAX_VALUE)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 728, Short.MAX_VALUE)
+                .addComponent(barraLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
@@ -58,11 +209,50 @@ public class MenuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
+        //Reinicia la GUI AL INICIO
+        //regresarMenu();
+    }//GEN-LAST:event_lblHomeMouseClicked
+
+    private void btnArchivoEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArchivoEntradaActionPerformed
+        //Lleva a la opcion de generar/insertar datos
+        //setIconoGestion();
+    }//GEN-LAST:event_btnArchivoEntradaActionPerformed
+
+    private void btnGenerarReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReportesActionPerformed
+        //Boton que permite generar certificados
+        //setIconoCertificado();
+
+        // viajarCertificados();
+    }//GEN-LAST:event_btnGenerarReportesActionPerformed
+
+    private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
+        //Boton que despliega todas las operaciones con inscripciones
+        //setIconoInscripciones();
+    }//GEN-LAST:event_btnConfigActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        //Codiciona que se debe de confirmar si se quiere cerrar la aplicacion
+        if (tomarDecision("Esta seguro que desea salir de la aplicacion?", "Salir de la aplicacion")) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel barraLateral;
+    private javax.swing.JButton btnArchivoEntrada;
+    private javax.swing.JButton btnConfig;
+    private javax.swing.JButton btnGenerarReportes;
+    private javax.swing.JLabel lblAdmin;
+    private javax.swing.JLabel lblElecccionEVT;
+    private javax.swing.JLabel lblEleccion;
+    private javax.swing.JLabel lblHome;
+    private javax.swing.JLabel lblPerfil;
+    private javax.swing.JPanel panelBarraPrincipal;
     private javax.swing.JPanel panelPrincipal;
     // End of variables declaration//GEN-END:variables
 }
