@@ -5,6 +5,9 @@
 package com.pablocompany.practicano1lfp.frontend;
 
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
+import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
+import java.awt.Color;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,7 +16,8 @@ import javax.swing.JOptionPane;
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuPrincipal.class.getName());
+    //Variable que permite saber que menu de operaciones se despliegara
+    private int gestionVentanas;
 
     /**
      * Creates new form MenuPrincipal
@@ -26,6 +30,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
         ColocarFondos pintarPanel = new ColocarFondos(this, this.panelPrincipal);
 
         pintarPanel.pintarPaneles("/com/pablocompany/practicano1/target/images/overlay2.png");
+
+        ImageIcon icono = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/perfildef.png"));
+
+        IlustrarLabels labelPerfil = new IlustrarLabels(this.panelBarraPrincipal, 60, 60, "", this.lblPerfil);
+        labelPerfil.cambiarLabel(icono);
+
+        ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/insertar.png"));
+
+        IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
+        labelMedio.cambiarLabel(iconoMedio);
+        
+        this.textEdicionArchivo.setEditable(true);
+        this.textEdicionArchivo.setCaretColor(Color.WHITE);
+
+        this.gestionVentanas = 0;
 
     }
 
@@ -41,7 +60,126 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         return opcion == JOptionPane.YES_OPTION;
     }
+    
+    
+    //========================================REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
+    
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas al muestreo de busquedas
+    public void operarBusquedas(){
+        
+    }
+    
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
+    public void modificarConfig(){
+        
+    }
+    
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
+    public void operarReportes(){
+        
+    }
+    
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
+    public void reestablecerUI(){
+        
+    }
+    
+    
+    //========================================FIN DE LA REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
 
+    //------------------------------------APARTADO DE METODOS QUE SE UTILIZAN PARA DINAMIZAR LA UI---------------------------
+    //Metodo que sirve para poder mostrar la seleccion de la busqueda de palabras
+    //1 busqueda de palabras
+    //2 Edicion del archivo config 
+    //3 Visualizacion de reportes
+    public void mostrarBusquedas() {
+
+        ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/busquedaDatos.png"));
+
+        IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
+        labelMedio.cambiarLabel(iconoMedio);
+        
+        this.lblEleccionesDadas.setText("Busqueda de Patrones");
+
+        //Reinicia el permiso para accionar botones
+        this.gestionVentanas = 1;
+
+        operarBusquedas();
+        
+        this.btnConfig.setBackground(new Color(0x323844));
+        this.btnGenerarReportes.setBackground(new Color(0x323844));
+        this.btnBusquedaPatrones.setBackground(new Color(0x2DB20C));
+
+    }
+    
+    //Metodo que genera la interaccion entre modificar el archivo de configuracion
+    public void cambiarConfiguracion() {
+
+        ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/subirArchivo.png"));
+
+        IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
+        labelMedio.cambiarLabel(iconoMedio);
+        this.lblEleccionesDadas.setText("Editar Configuracion");
+
+        //Reinicia el permiso para accionar botones
+        this.gestionVentanas = 2;
+
+        modificarConfig();
+        
+        
+        this.btnBusquedaPatrones.setBackground(new Color(0x323844));
+        this.btnGenerarReportes.setBackground(new Color(0x323844));
+        this.btnConfig.setBackground(new Color(0x2DB20C));
+
+    }
+    
+    //Metodo que genera la interaccion entre generar reportes
+    public void generarReportes() {
+
+        ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/reportes.png"));
+
+        IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
+        labelMedio.cambiarLabel(iconoMedio);
+        this.lblEleccionesDadas.setText("Generar Reportes");
+
+        //Reinicia el permiso para accionar botones
+        this.gestionVentanas = 3;
+
+        operarReportes();
+        
+        
+        this.btnBusquedaPatrones.setBackground(new Color(0x323844));
+        this.btnConfig.setBackground(new Color(0x323844));
+        this.btnGenerarReportes.setBackground(new Color(0x2DB20C));
+
+    }
+    
+    
+    //Metodo que se encarga de regresar a la interfaz inicial
+    public void regresarInicio() {
+
+        ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/insertar.png"));
+
+        IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
+        labelMedio.cambiarLabel(iconoMedio);
+        this.lblEleccionesDadas.setText("Edicion de Archivos");
+
+        //Reinicia el permiso para accionar botones
+        this.gestionVentanas = 0;
+
+        reestablecerUI();
+        
+        
+        this.btnBusquedaPatrones.setBackground(new Color(0x323844));
+        this.btnConfig.setBackground(new Color(0x323844));
+        this.btnGenerarReportes.setBackground(new Color(0x323844));
+
+    }
+    
+    
+    
+
+    //------------------------------------FIN DEL APARTADO DE METODOS QUE SE UTILIZAN PARA DINAMIZAR LA UI---------------------------
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -57,11 +195,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
         lblHome = new javax.swing.JLabel();
         lblAdmin = new javax.swing.JLabel();
         lblPerfil = new javax.swing.JLabel();
-        lblElecccionEVT = new javax.swing.JLabel();
+        lblEleccionesDadas = new javax.swing.JLabel();
         barraLateral = new javax.swing.JPanel();
-        btnArchivoEntrada = new javax.swing.JButton();
+        btnBusquedaPatrones = new javax.swing.JButton();
         btnGenerarReportes = new javax.swing.JButton();
         btnConfig = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        labelDatos = new javax.swing.JLabel();
+        registrarInscrp = new javax.swing.JButton();
+        lblTitulo = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtAreaDirectorioArchivo = new javax.swing.JTextArea();
+        registrarInscrp1 = new javax.swing.JButton();
+        labelOperaciones1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        textEdicionArchivo = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -86,9 +234,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
         lblAdmin.setForeground(new java.awt.Color(255, 255, 255));
         lblAdmin.setText("Usuario");
 
-        lblElecccionEVT.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
-        lblElecccionEVT.setForeground(new java.awt.Color(255, 255, 255));
-        lblElecccionEVT.setText("Operacion");
+        lblEleccionesDadas.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        lblEleccionesDadas.setForeground(new java.awt.Color(255, 255, 255));
+        lblEleccionesDadas.setText("Edicion de Archivos");
 
         javax.swing.GroupLayout panelBarraPrincipalLayout = new javax.swing.GroupLayout(panelBarraPrincipal);
         panelBarraPrincipal.setLayout(panelBarraPrincipalLayout);
@@ -96,14 +244,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
             panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblAdmin)
-                .addGap(460, 460, 460)
+                .addGap(472, 472, 472)
                 .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblElecccionEVT, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblEleccionesDadas, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 386, Short.MAX_VALUE)
                 .addComponent(lblHome)
                 .addGap(24, 24, 24))
         );
@@ -113,15 +261,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
+                                .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11))))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelBarraPrincipalLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblHome)
-                            .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lblElecccionEVT, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEleccionesDadas, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelBarraPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(lblHome)
+                                .addGroup(panelBarraPrincipalLayout.createSequentialGroup()
+                                    .addComponent(lblAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(12, 12, 12))))))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
 
@@ -129,15 +282,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
         barraLateral.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(0, 0, 0)));
         barraLateral.setForeground(new java.awt.Color(0, 0, 0));
 
-        btnArchivoEntrada.setBackground(new java.awt.Color(50, 56, 68));
-        btnArchivoEntrada.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
-        btnArchivoEntrada.setForeground(new java.awt.Color(255, 255, 255));
-        btnArchivoEntrada.setText("Archivo de entrada");
-        btnArchivoEntrada.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 255, 255)));
-        btnArchivoEntrada.setFocusable(false);
-        btnArchivoEntrada.addActionListener(new java.awt.event.ActionListener() {
+        btnBusquedaPatrones.setBackground(new java.awt.Color(50, 56, 68));
+        btnBusquedaPatrones.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnBusquedaPatrones.setForeground(new java.awt.Color(255, 255, 255));
+        btnBusquedaPatrones.setText("Busqueda de Patrones");
+        btnBusquedaPatrones.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 2, 2, 2, new java.awt.Color(255, 255, 255)));
+        btnBusquedaPatrones.setFocusable(false);
+        btnBusquedaPatrones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnArchivoEntradaActionPerformed(evt);
+                btnBusquedaPatronesActionPerformed(evt);
             }
         });
 
@@ -171,7 +324,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(barraLateralLayout.createSequentialGroup()
                 .addGap(294, 294, 294)
-                .addComponent(btnArchivoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBusquedaPatrones, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -183,11 +336,91 @@ public class MenuPrincipal extends javax.swing.JFrame {
             .addGroup(barraLateralLayout.createSequentialGroup()
                 .addContainerGap(8, Short.MAX_VALUE)
                 .addGroup(barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnArchivoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBusquedaPatrones, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGenerarReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(50, 56, 68)));
+        jPanel1.setOpaque(false);
+
+        labelDatos.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        labelDatos.setForeground(new java.awt.Color(45, 26, 5));
+        labelDatos.setText("Requisitos de carga de archivos:");
+
+        registrarInscrp.setBackground(new java.awt.Color(48, 148, 92));
+        registrarInscrp.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
+        registrarInscrp.setForeground(new java.awt.Color(255, 255, 255));
+        registrarInscrp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/importFile.png"))); // NOI18N
+        registrarInscrp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrarInscrpActionPerformed(evt);
+            }
+        });
+
+        lblTitulo.setFont(new java.awt.Font("Liberation Sans", 1, 28)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(42, 48, 60));
+        lblTitulo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblTitulo.setText("Directorio Archivo:");
+
+        txtAreaDirectorioArchivo.setColumns(20);
+        txtAreaDirectorioArchivo.setFont(new java.awt.Font("Liberation Sans", 0, 26)); // NOI18N
+        txtAreaDirectorioArchivo.setRows(5);
+        jScrollPane3.setViewportView(txtAreaDirectorioArchivo);
+
+        registrarInscrp1.setBackground(new java.awt.Color(148, 47, 47));
+        registrarInscrp1.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
+        registrarInscrp1.setForeground(new java.awt.Color(255, 255, 255));
+        registrarInscrp1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/removerArchivo.png"))); // NOI18N
+        registrarInscrp1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                registrarInscrp1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(labelDatos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(12, 12, 12)
+                        .addComponent(registrarInscrp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(registrarInscrp1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelDatos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTitulo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(registrarInscrp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(registrarInscrp, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        labelOperaciones1.setFont(new java.awt.Font("Liberation Sans", 1, 30)); // NOI18N
+        labelOperaciones1.setForeground(new java.awt.Color(45, 26, 5));
+        labelOperaciones1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelOperaciones1.setText("Archivo de entrada:");
+
+        textEdicionArchivo.setBackground(new java.awt.Color(50, 56, 68));
+        textEdicionArchivo.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
+        textEdicionArchivo.setForeground(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setViewportView(textEdicionArchivo);
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
@@ -195,12 +428,28 @@ public class MenuPrincipal extends javax.swing.JFrame {
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(barraLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labelOperaciones1, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 728, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                        .addGap(194, 194, 194))
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(barraLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -211,24 +460,25 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         //Reinicia la GUI AL INICIO
-        //regresarMenu();
+        regresarInicio();
     }//GEN-LAST:event_lblHomeMouseClicked
 
-    private void btnArchivoEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnArchivoEntradaActionPerformed
-        //Lleva a la opcion de generar/insertar datos
-        //setIconoGestion();
-    }//GEN-LAST:event_btnArchivoEntradaActionPerformed
+    private void btnBusquedaPatronesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusquedaPatronesActionPerformed
+        //Lleva a la opcion de buscar palabras
+        mostrarBusquedas();
+    }//GEN-LAST:event_btnBusquedaPatronesActionPerformed
 
     private void btnGenerarReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReportesActionPerformed
-        //Boton que permite generar certificados
-        //setIconoCertificado();
-
-        // viajarCertificados();
+        //Boton que permite generar los reportes
+        generarReportes();
+        
+        
     }//GEN-LAST:event_btnGenerarReportesActionPerformed
 
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
-        //Boton que despliega todas las operaciones con inscripciones
-        //setIconoInscripciones();
+        //Boton que despliega las opciones para editar el config
+        cambiarConfiguracion();
+        
     }//GEN-LAST:event_btnConfigActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -238,21 +488,40 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void registrarInscrpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrpActionPerformed
+        //Ejecuta la accion para Elegir el archivo txt
+      //  this.referenciaLectura.elegirArchivoTxt();
+    }//GEN-LAST:event_registrarInscrpActionPerformed
+
+    private void registrarInscrp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrp1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_registrarInscrp1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel barraLateral;
-    private javax.swing.JButton btnArchivoEntrada;
+    private javax.swing.JButton btnBusquedaPatrones;
     private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnGenerarReportes;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel labelDatos;
+    private javax.swing.JLabel labelOperaciones1;
     private javax.swing.JLabel lblAdmin;
-    private javax.swing.JLabel lblElecccionEVT;
     private javax.swing.JLabel lblEleccion;
+    private javax.swing.JLabel lblEleccionesDadas;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblPerfil;
+    private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel panelBarraPrincipal;
     private javax.swing.JPanel panelPrincipal;
+    private javax.swing.JButton registrarInscrp;
+    private javax.swing.JButton registrarInscrp1;
+    private javax.swing.JTextPane textEdicionArchivo;
+    private javax.swing.JTextArea txtAreaDirectorioArchivo;
     // End of variables declaration//GEN-END:variables
 }
