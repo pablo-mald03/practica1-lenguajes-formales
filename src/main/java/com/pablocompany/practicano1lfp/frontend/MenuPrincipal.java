@@ -4,11 +4,16 @@
  */
 package com.pablocompany.practicano1lfp.frontend;
 
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
 import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
+import com.pablocompany.practicano1lfp.backend.LectorEntradas;
+import com.pablocompany.practicano1lfp.backend.ManejadorArchivos;
 import java.awt.Color;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -18,7 +23,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     //Variable que permite saber que menu de operaciones se despliegara
     private int gestionVentanas;
-
+    
+    //instancia que permite subir archivos de texto
+    private ManejadorArchivos manipuladorDirectorios;
+    private LectorEntradas leerEntradas;
+    
+    //Atributo que permite saber si el archivo ya fue cargado
+    //true si el archivo ya se cargo
+    //false si el archivo no se ha cargado
+    private boolean yaCargado; 
+    
     /**
      * Creates new form MenuPrincipal
      */
@@ -41,10 +55,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
         IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
         labelMedio.cambiarLabel(iconoMedio);
         
+        this.txtAreaDirectorioArchivo.setEditable(false);
         this.textEdicionArchivo.setEditable(true);
-        this.textEdicionArchivo.setCaretColor(Color.WHITE);
+        this.textEdicionArchivo.setCaretColor(Color.BLACK);
 
         this.gestionVentanas = 0;
+        this.yaCargado = false; 
+        
+        //Se instancia la clase para poder operar con archivos de texto
+        this.manipuladorDirectorios = new ManejadorArchivos();
+        this.leerEntradas = new LectorEntradas();
+        
 
     }
 
@@ -346,7 +367,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jPanel1.setOpaque(false);
 
         labelDatos.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
-        labelDatos.setForeground(new java.awt.Color(45, 26, 5));
+        labelDatos.setForeground(new java.awt.Color(83, 31, 11));
         labelDatos.setText("Requisitos de carga de archivos:");
 
         registrarInscrp.setBackground(new java.awt.Color(48, 148, 92));
@@ -413,13 +434,18 @@ public class MenuPrincipal extends javax.swing.JFrame {
         );
 
         labelOperaciones1.setFont(new java.awt.Font("Liberation Sans", 1, 30)); // NOI18N
-        labelOperaciones1.setForeground(new java.awt.Color(45, 26, 5));
+        labelOperaciones1.setForeground(new java.awt.Color(83, 31, 11));
         labelOperaciones1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelOperaciones1.setText("Archivo de entrada:");
 
-        textEdicionArchivo.setBackground(new java.awt.Color(50, 56, 68));
+        textEdicionArchivo.setBackground(new java.awt.Color(255, 255, 255));
         textEdicionArchivo.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
-        textEdicionArchivo.setForeground(new java.awt.Color(255, 255, 255));
+        textEdicionArchivo.setForeground(new java.awt.Color(0, 0, 0));
+        textEdicionArchivo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textEdicionArchivoKeyReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(textEdicionArchivo);
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -445,11 +471,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
-                        .addGap(194, 194, 194))
-                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(barraLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -489,13 +513,39 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void registrarInscrpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrpActionPerformed
-        //Ejecuta la accion para Elegir el archivo txt
-      //  this.referenciaLectura.elegirArchivoTxt();
+        try {
+            //Ejecuta la accion para Elegir el archivo
+            
+            if(this.manipuladorDirectorios.elegirArchivoEntrada()){
+                ArrayList<String> listaObtenida = this.manipuladorDirectorios.convertirEntrada();
+                
+                this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
+                
+                this.leerEntradas.setLista(listaObtenida, this.textEdicionArchivo);
+                
+                this.txtAreaDirectorioArchivo.setText(this.manipuladorDirectorios.getPath());
+            }
+            
+            
+        } catch (BadLocationException |AnalizadorLexicoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
+        }
+        
+
     }//GEN-LAST:event_registrarInscrpActionPerformed
 
     private void registrarInscrp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrp1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_registrarInscrp1ActionPerformed
+
+    private void textEdicionArchivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEdicionArchivoKeyReleased
+        try {
+            //Detecta cada vez que se cambia una palabra
+            this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+        } catch (AnalizadorLexicoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
     /**
      * @param args the command line arguments
