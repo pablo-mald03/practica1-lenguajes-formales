@@ -7,10 +7,11 @@ package com.pablocompany.practicano1lfp.frontend;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
 import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
+import com.pablocompany.practicano1lfp.backend.ConfigDatos;
+import com.pablocompany.practicano1lfp.backend.ConfigException;
 import com.pablocompany.practicano1lfp.backend.LectorEntradas;
 import com.pablocompany.practicano1lfp.backend.ManejadorArchivos;
 import java.awt.Color;
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -220,6 +221,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelOperaciones1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         textEdicionArchivo = new javax.swing.JTextPane();
+        lblAnalisis = new javax.swing.JLabel();
+        btnAnalisis = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -437,6 +440,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(textEdicionArchivo);
 
+        lblAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        lblAnalisis.setForeground(new java.awt.Color(83, 31, 11));
+        lblAnalisis.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAnalisis.setText("Analizar Manualmente:");
+
+        btnAnalisis.setBackground(new java.awt.Color(46, 136, 80));
+        btnAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnAnalisis.setText("Analizar Texto");
+        btnAnalisis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnalisisActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
@@ -444,8 +461,18 @@ public class MenuPrincipal extends javax.swing.JFrame {
             .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(barraLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblAnalisis, javax.swing.GroupLayout.DEFAULT_SIZE, 677, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGap(243, 243, 243)
+                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelOperaciones1, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
@@ -461,7 +488,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblAnalisis)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(barraLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -563,12 +595,23 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
+    private void btnAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalisisActionPerformed
+        //Testing para mientras
+        ConfigDatos configurar = new ConfigDatos();
+        try {
+            configurar.cargarDesdeJson();
+        } catch (ConfigException ex) {
+            System.out.println("Error " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnAnalisisActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel barraLateral;
+    private javax.swing.JButton btnAnalisis;
     private javax.swing.JButton btnBusquedaPatrones;
     private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnGenerarReportes;
@@ -578,6 +621,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel labelDatos;
     private javax.swing.JLabel labelOperaciones1;
     private javax.swing.JLabel lblAdmin;
+    private javax.swing.JLabel lblAnalisis;
     private javax.swing.JLabel lblEleccion;
     private javax.swing.JLabel lblEleccionesDadas;
     private javax.swing.JLabel lblHome;

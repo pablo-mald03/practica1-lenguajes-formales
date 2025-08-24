@@ -26,46 +26,54 @@ public class LectorEntradas {
 
     //Metodo que permite transformar todo el texto de entrada al arreglo 
     public void transformarTexto(String texto, JTextPane paneLog) throws AnalizadorLexicoException {
-        
-        if(!listaTexto.isEmpty()){
+
+        if (!listaTexto.isEmpty()) {
             listaTexto.clear();
         }
 
-        BufferedReader bufer = new BufferedReader(new StringReader(texto));
-
-        String linea;
-        
-        try {
+        try (BufferedReader bufer = new BufferedReader(new StringReader(texto))) {
+            String linea;
             while ((linea = bufer.readLine()) != null) {
                 listaTexto.add(linea);
             }
         } catch (IOException ex) {
             throw new AnalizadorLexicoException("No se ha podido procesar el texto de entrada");
         }
+
+        //Valida si la lista viene vacia o si la principal cadena de entrada esta vacia
+        if (this.listaTexto.isEmpty()) {
+            return;
+        }
         
-         System.out.println("Tamanio transformado" + this.listaTexto.size()); 
+        //Referencia a metodo foreach en streams para poder validar que no se procese algo totalmente vacio
+        boolean todoVacio = this.listaTexto.stream().allMatch(String::isBlank);
+        
+        if (todoVacio) {
+            return;
+        }
+
+        System.out.println("Tamanio transformado" + this.listaTexto.size());
 
     }
-    
+
     //Metodo set que permite referenciar el arreglo extraido hacia el interno de la clase
-    public void setLista(ArrayList<String> listaParametro, JTextPane paneLog){
+    public void setLista(ArrayList<String> listaParametro, JTextPane paneLog) {
         this.listaTexto = listaParametro;
-        
-        System.out.println("Tamanio " + this.listaTexto.size());   
+
+        System.out.println("Tamanio " + this.listaTexto.size());
     }
-    
+
     //Metodo que retorna el listado de textos almacenados en el componente
-    public ArrayList<String> getListado(){
-        return this.listaTexto; 
+    public ArrayList<String> getListado() {
+        return this.listaTexto;
     }
-    
+
     //Metodo que permite pasar por parametro un arraylist e imprimirlo en un JtextPane
-    public void imprimirLog(ArrayList<String> listaExtraida, JTextPane textPane) throws BadLocationException{    
+    public void imprimirLog(ArrayList<String> listaExtraida, JTextPane textPane) throws BadLocationException {
         StyledDocument doc = textPane.getStyledDocument();
         for (int i = 0; i < listaExtraida.size(); i++) {
             doc.insertString(doc.getLength(), listaExtraida.get(i) + "\n", null);
         }
     }
-    
 
 }

@@ -1,0 +1,145 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.pablocompany.practicano1lfp.backend;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+/**
+ *
+ * @author pablo
+ */
+//Clase encargada de controlar todos los tokenes necesarios y permitidos
+public class ConfigDatos {
+
+    private ArrayList<String> palabrasReservadas = new ArrayList<>();
+    private ArrayList<String> operadores = new ArrayList<>();
+    private ArrayList<String> puntuacion = new ArrayList<>();
+    private ArrayList<String> agrupacion = new ArrayList<>();
+
+    private Comentarios comments;
+
+    public ConfigDatos() {
+        this.comments = new Comentarios();
+    }
+
+    //Metodo que se encarga de leer y procesar todo a arrayList
+    public void cargarDesdeJson() throws ConfigException {
+
+        // String ruta = "/com/pablocompany/practicano1/target/configuracion/config.json";
+        InputStream ruta = getClass().getResourceAsStream("/com/pablocompany/practicano1/target/configuracion/config.json");
+
+        StringBuilder sb = new StringBuilder();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(ruta))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                sb.append(linea.trim());
+            }
+
+            String json = sb.toString();
+
+            this.palabrasReservadas = extraerArray(json, "palabrasReservadas");
+            this.operadores = extraerArray(json, "operadores");
+            this.puntuacion = extraerArray(json, "puntuacion");
+            this.agrupacion = extraerArray(json, "agrupacion");
+
+            cargarComentarios(json);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ConfigException("No se ha podido procesar el config.json");
+        }
+
+    }
+
+    //Metodo que sirve para extraer del .json toda la configuracion de tokens
+    private ArrayList<String> extraerArray(String json, String clave) {
+        ArrayList<String> lista = new ArrayList<>();
+        int pos = json.indexOf("\"" + clave + "\"");
+        if (pos == -1) {
+            return lista;
+        }
+
+        pos = json.indexOf("[", pos);
+        if (pos == -1) {
+            return lista;
+        }
+
+        int fin = pos + 1;
+        boolean dentroComillas = false;
+        StringBuilder elemento = new StringBuilder();
+
+        while (fin < json.length()) {
+            char c = json.charAt(fin);
+            if (c == '"') {
+                dentroComillas = !dentroComillas;
+            } else if (c == ',' && !dentroComillas) {
+                if (elemento.length() > 0) {
+                    lista.add(elemento.toString().trim());
+                    elemento.setLength(0);
+                }
+            } else if (c == ']' && !dentroComillas) {
+                if (elemento.length() > 0) {
+                    lista.add(elemento.toString().trim());
+                }
+                break;
+            } else {
+                elemento.append(c);
+            }
+            fin++;
+        }
+
+        return lista;
+
+    }
+
+//Metodo que se encarga de instanciar todos los comentarios PENDIENTE
+    private void cargarComentarios(String cargado) {
+
+        String json = cargado;
+
+        int inicio = json.indexOf("\"comentarios\"") + "\"comentarios\"".length();
+        inicio = json.indexOf("{", inicio);
+
+        int fin = json.indexOf("}", inicio);
+
+        String comentariosJson = json.substring(inicio + 1, fin).trim();
+
+        String linea = null;
+        String bloqueInicio = null;
+        String bloqueFin = null;
+
+        for (String parte : comentariosJson.split(",")) {
+            String[] keyValue = parte.split(":");
+            if (keyValue.length != 2) {
+                continue;
+            }
+
+            String key = keyValue[0].trim().replace("\"", "");
+            String value = keyValue[1].trim().replace("\"", "");
+
+            switch (key) {
+                case "linea" ->
+                    linea = value;
+                case "bloqueInicio" ->
+                    bloqueInicio = value;
+                case "bloqueFin" ->
+                    bloqueFin = value;
+            }
+        }
+
+        this.comments.setLinea(linea);
+        this.comments.setBloqueInicio(bloqueInicio);
+        this.comments.setBloqueFin(bloqueFin);
+
+    }
+
+}
