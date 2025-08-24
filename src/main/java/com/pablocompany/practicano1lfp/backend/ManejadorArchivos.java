@@ -6,12 +6,13 @@ package com.pablocompany.practicano1lfp.backend;
 
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
-import javax.swing.JTextPane;
 
 
 /**
@@ -45,6 +46,33 @@ public class ManejadorArchivos {
         }
 
         return false;
+    }
+    
+    
+     //Metodo que sirve para poder guardar el archivo en el destinatario dado
+    
+     public void guardarArchivo(String directorio, ArrayList<String> lineas) throws AnalizadorLexicoException {
+         
+         
+         if(directorio.isBlank()){
+             throw new AnalizadorLexicoException("No hay ningun archivo subido aun");
+         }
+         
+         File archivo = new File(directorio);
+         
+         if(!archivo.exists()){
+             throw new AnalizadorLexicoException("Aun no se ha definido un path para almacenar el archivo");
+         }
+         
+         
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, false))) {
+            for (String linea : lineas) {
+                bw.write(linea);
+                bw.newLine(); // salto de línea
+            }
+        } catch (IOException e) {
+           throw new AnalizadorLexicoException("No hay un path definido para reescribir el archivo");
+        }
     }
 
     //Metodo que transforma el path de entrada a un arreglo
@@ -87,6 +115,11 @@ public class ManejadorArchivos {
     //Metodo que retorna el path seleccionado
     public String getPath(){
         return this.pathEntrada;
+    }
+    
+    //Metodo que sirve para reiniciar el path de entrada
+    public void reiniciarPath(){
+        this.pathEntrada = "";
     }
 
 }

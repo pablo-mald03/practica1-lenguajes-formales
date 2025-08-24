@@ -54,6 +54,11 @@ public class LectorEntradas {
         System.out.println("Tamanio " + this.listaTexto.size());   
     }
     
+    //Metodo que retorna el listado de textos almacenados en el componente
+    public ArrayList<String> getListado(){
+        return this.listaTexto; 
+    }
+    
     //Metodo que permite pasar por parametro un arraylist e imprimirlo en un JtextPane
     public void imprimirLog(ArrayList<String> listaExtraida, JTextPane textPane) throws BadLocationException{    
         StyledDocument doc = textPane.getStyledDocument();

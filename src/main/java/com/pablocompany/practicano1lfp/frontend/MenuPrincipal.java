@@ -10,6 +10,7 @@ import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
 import com.pablocompany.practicano1lfp.backend.LectorEntradas;
 import com.pablocompany.practicano1lfp.backend.ManejadorArchivos;
 import java.awt.Color;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -23,16 +24,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     //Variable que permite saber que menu de operaciones se despliegara
     private int gestionVentanas;
-    
+
     //instancia que permite subir archivos de texto
     private ManejadorArchivos manipuladorDirectorios;
     private LectorEntradas leerEntradas;
-    
+
     //Atributo que permite saber si el archivo ya fue cargado
     //true si el archivo ya se cargo
     //false si el archivo no se ha cargado
-    private boolean yaCargado; 
-    
+    private boolean yaCargado;
+
     /**
      * Creates new form MenuPrincipal
      */
@@ -54,18 +55,17 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
         labelMedio.cambiarLabel(iconoMedio);
-        
+
         this.txtAreaDirectorioArchivo.setEditable(false);
         this.textEdicionArchivo.setEditable(true);
         this.textEdicionArchivo.setCaretColor(Color.BLACK);
 
         this.gestionVentanas = 0;
-        this.yaCargado = false; 
-        
+        this.yaCargado = false;
+
         //Se instancia la clase para poder operar con archivos de texto
         this.manipuladorDirectorios = new ManejadorArchivos();
         this.leerEntradas = new LectorEntradas();
-        
 
     }
 
@@ -81,33 +81,29 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         return opcion == JOptionPane.YES_OPTION;
     }
-    
-    
-    //========================================REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
-    
-    //Metodo que se utiliza para manejar todos los componentes y funciones previas al muestreo de busquedas
-    public void operarBusquedas(){
-        
-    }
-    
-    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
-    public void modificarConfig(){
-        
-    }
-    
-    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
-    public void operarReportes(){
-        
-    }
-    
-    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
-    public void reestablecerUI(){
-        
-    }
-    
-    
-    //========================================FIN DE LA REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
 
+    //========================================REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas al muestreo de busquedas
+    public void operarBusquedas() {
+
+    }
+
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
+    public void modificarConfig() {
+
+    }
+
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
+    public void operarReportes() {
+
+    }
+
+    //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
+    public void reestablecerUI() {
+
+    }
+
+    //========================================FIN DE LA REGION DE METODOS UTILIZADOS PARA CADA FUNCIONALIDAD==============================
     //------------------------------------APARTADO DE METODOS QUE SE UTILIZAN PARA DINAMIZAR LA UI---------------------------
     //Metodo que sirve para poder mostrar la seleccion de la busqueda de palabras
     //1 busqueda de palabras
@@ -119,20 +115,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
         labelMedio.cambiarLabel(iconoMedio);
-        
+
         this.lblEleccionesDadas.setText("Busqueda de Patrones");
 
         //Reinicia el permiso para accionar botones
         this.gestionVentanas = 1;
 
         operarBusquedas();
-        
+
         this.btnConfig.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x323844));
         this.btnBusquedaPatrones.setBackground(new Color(0x2DB20C));
 
     }
-    
+
     //Metodo que genera la interaccion entre modificar el archivo de configuracion
     public void cambiarConfiguracion() {
 
@@ -146,14 +142,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.gestionVentanas = 2;
 
         modificarConfig();
-        
-        
+
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x2DB20C));
 
     }
-    
+
     //Metodo que genera la interaccion entre generar reportes
     public void generarReportes() {
 
@@ -167,15 +162,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.gestionVentanas = 3;
 
         operarReportes();
-        
-        
+
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x2DB20C));
 
     }
-    
-    
+
     //Metodo que se encarga de regresar a la interfaz inicial
     public void regresarInicio() {
 
@@ -189,16 +182,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.gestionVentanas = 0;
 
         reestablecerUI();
-        
-        
+
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x323844));
 
     }
-    
-    
-    
 
     //------------------------------------FIN DEL APARTADO DE METODOS QUE SE UTILIZAN PARA DINAMIZAR LA UI---------------------------
     /**
@@ -495,14 +484,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void btnGenerarReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReportesActionPerformed
         //Boton que permite generar los reportes
         generarReportes();
-        
-        
+
+
     }//GEN-LAST:event_btnGenerarReportesActionPerformed
 
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
         //Boton que despliega las opciones para editar el config
         cambiarConfiguracion();
-        
+
     }//GEN-LAST:event_btnConfigActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -515,27 +504,54 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void registrarInscrpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrpActionPerformed
         try {
             //Ejecuta la accion para Elegir el archivo
-            
-            if(this.manipuladorDirectorios.elegirArchivoEntrada()){
+
+            if (this.manipuladorDirectorios.elegirArchivoEntrada()) {
                 ArrayList<String> listaObtenida = this.manipuladorDirectorios.convertirEntrada();
-                
+
                 this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
-                
+
                 this.leerEntradas.setLista(listaObtenida, this.textEdicionArchivo);
-                
+
                 this.txtAreaDirectorioArchivo.setText(this.manipuladorDirectorios.getPath());
+                this.yaCargado = true;
             }
-            
-            
-        } catch (BadLocationException |AnalizadorLexicoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
+
+        } catch (BadLocationException | AnalizadorLexicoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         }
-        
+
 
     }//GEN-LAST:event_registrarInscrpActionPerformed
 
     private void registrarInscrp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrp1ActionPerformed
-        // TODO add your handling code here:
+        //Permite cerrar el archivo que ya fue editado durante el proceso guardando los datos
+        if (this.yaCargado) {
+
+            if (tomarDecision("Deseas cerrar este archivo cargado\nSe guardaran todos los cambios hechos", "Confirmar cierre")) {
+                
+                try {
+                    String directorio = this.manipuladorDirectorios.getPath();
+
+                    this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+
+                    ArrayList<String> lista = this.leerEntradas.getListado();
+
+                    this.manipuladorDirectorios.guardarArchivo(directorio, lista);
+
+                    this.txtAreaDirectorioArchivo.setText("");
+                    this.manipuladorDirectorios.reiniciarPath();
+                    this.textEdicionArchivo.setText("");
+                    this.yaCargado = false;
+
+                } catch (AnalizadorLexicoException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Guardado", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }else{
+             JOptionPane.showMessageDialog(this,"Todavia no has cargado ningun archivo para poder cerrarlo", "No hay ningun archivo cargado aun", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+
     }//GEN-LAST:event_registrarInscrp1ActionPerformed
 
     private void textEdicionArchivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEdicionArchivoKeyReleased
@@ -543,7 +559,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
         } catch (AnalizadorLexicoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
