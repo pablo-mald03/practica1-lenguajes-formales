@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
-
 /**
  *
  * @author pablo
@@ -47,31 +46,27 @@ public class ManejadorArchivos {
 
         return false;
     }
-    
-    
-     //Metodo que sirve para poder guardar el archivo en el destinatario dado
-    
-     public void guardarArchivo(String directorio, ArrayList<String> lineas) throws AnalizadorLexicoException {
-         
-         
-         if(directorio.isBlank()){
-             throw new AnalizadorLexicoException("No hay ningun archivo subido aun");
-         }
-         
-         File archivo = new File(directorio);
-         
-         if(!archivo.exists()){
-             throw new AnalizadorLexicoException("Aun no se ha definido un path para almacenar el archivo");
-         }
-         
-         
+
+    //Metodo que sirve para poder guardar el archivo en el destinatario dado
+    public void guardarArchivo(String directorio, ArrayList<String> lineas) throws AnalizadorLexicoException {
+
+        if (directorio.isBlank()) {
+            throw new AnalizadorLexicoException("No hay ningun archivo subido aun");
+        }
+
+        File archivo = new File(directorio);
+
+        if (!archivo.exists()) {
+            throw new AnalizadorLexicoException("Aun no se ha definido un path para almacenar el archivo");
+        }
+
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, false))) {
             for (String linea : lineas) {
                 bw.write(linea);
                 bw.newLine(); // salto de línea
             }
         } catch (IOException e) {
-           throw new AnalizadorLexicoException("No hay un path definido para reescribir el archivo");
+            throw new AnalizadorLexicoException("No hay un path definido para reescribir el archivo");
         }
     }
 
@@ -79,11 +74,11 @@ public class ManejadorArchivos {
     public ArrayList<String> convertirEntrada() throws AnalizadorLexicoException {
 
         ArrayList<String> listaLectura = new ArrayList<>(6000);
-        
-        if(this.pathEntrada == null || this.pathEntrada.isBlank()){
+
+        if (this.pathEntrada == null || this.pathEntrada.isBlank()) {
             throw new AnalizadorLexicoException("No se ha definido aun un archivo para cargar");
         }
-        
+
         File archivo = new File(this.pathEntrada);
 
         if (!archivo.exists() || !archivo.isFile()) {
@@ -94,9 +89,9 @@ public class ManejadorArchivos {
             String linea;
             while ((linea = br.readLine()) != null) {
                 linea = linea.trim();
-                if (!linea.isEmpty()) {
-                    listaLectura.add(linea); // guardamos la línea tal cual
-                }
+
+                listaLectura.add(linea); // guardamos la línea tal cual
+
             }
         } catch (IOException ex) {
             throw new AnalizadorLexicoException("No se ha podido procesar el archivo seleccionado");
@@ -110,15 +105,14 @@ public class ManejadorArchivos {
         //Retorna el arraylist en el mismo formato para procesarlo
         return listaLectura;
     }
-    
-    
+
     //Metodo que retorna el path seleccionado
-    public String getPath(){
+    public String getPath() {
         return this.pathEntrada;
     }
-    
+
     //Metodo que sirve para reiniciar el path de entrada
-    public void reiniciarPath(){
+    public void reiniciarPath() {
         this.pathEntrada = "";
     }
 

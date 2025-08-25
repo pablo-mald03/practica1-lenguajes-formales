@@ -4,6 +4,7 @@
  */
 package com.pablocompany.practicano1lfp.backend;
 
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,28 +40,31 @@ public class LectorEntradas {
         } catch (IOException ex) {
             throw new AnalizadorLexicoException("No se ha podido procesar el texto de entrada");
         }
+    }
+
+    //Metodo mas importante para poder analizar el texto y procesarlo
+    public void analizarEntradas(JTextPane paneLog) {
 
         //Valida si la lista viene vacia o si la principal cadena de entrada esta vacia
         if (this.listaTexto.isEmpty()) {
             return;
         }
-        
+
         //Referencia a metodo foreach en streams para poder validar que no se procese algo totalmente vacio
         boolean todoVacio = this.listaTexto.stream().allMatch(String::isBlank);
-        
+
         if (todoVacio) {
             return;
         }
 
-        System.out.println("Tamanio transformado" + this.listaTexto.size());
+        AnalizadorLexico automata = new AnalizadorLexico(paneLog, this.listaTexto);
+        automata.descomponerLexemas();
 
     }
 
     //Metodo set que permite referenciar el arreglo extraido hacia el interno de la clase
     public void setLista(ArrayList<String> listaParametro, JTextPane paneLog) {
         this.listaTexto = listaParametro;
-
-        System.out.println("Tamanio " + this.listaTexto.size());
     }
 
     //Metodo que retorna el listado de textos almacenados en el componente

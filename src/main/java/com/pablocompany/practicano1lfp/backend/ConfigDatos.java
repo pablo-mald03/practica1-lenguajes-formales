@@ -33,7 +33,20 @@ public class ConfigDatos {
     //Metodo que se encarga de leer y procesar todo a arrayList
     public void cargarDesdeJson() throws ConfigException {
 
-        // String ruta = "/com/pablocompany/practicano1/target/configuracion/config.json";
+        if(!this.palabrasReservadas.isEmpty()){
+            this.palabrasReservadas.clear();
+        }
+        
+        if(!this.operadores.isEmpty()){
+            this.operadores.clear();
+        }
+        if(!this.puntuacion.isEmpty()){
+            this.puntuacion.clear();
+        }
+        if(!this.agrupacion.isEmpty()){
+            this.agrupacion.clear();
+        }
+
         InputStream ruta = getClass().getResourceAsStream("/com/pablocompany/practicano1/target/configuracion/config.json");
 
         StringBuilder sb = new StringBuilder();
@@ -54,7 +67,6 @@ public class ConfigDatos {
             cargarComentarios(json);
 
         } catch (IOException ex) {
-            ex.printStackTrace();
             throw new ConfigException("No se ha podido procesar el config.json");
         }
 

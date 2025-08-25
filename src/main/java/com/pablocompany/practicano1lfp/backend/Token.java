@@ -8,8 +8,10 @@ package com.pablocompany.practicano1lfp.backend;
  *
  * @author pablo
  */
+//Clase de constantes que permite reconocer el tipo de token que es 
 public enum Token {
 
+    PREDETERMINADO("PREDETERMINADO"),
     IDENTIFICADOR("IDENTIFICADOR"),
     NUMERO("NUMERO"),
     DECIMAL("DECIMAL"),

@@ -213,11 +213,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         btnConfig = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         labelDatos = new javax.swing.JLabel();
-        registrarInscrp = new javax.swing.JButton();
+        btnSubirArchivo = new javax.swing.JButton();
         lblTitulo = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtAreaDirectorioArchivo = new javax.swing.JTextArea();
-        registrarInscrp1 = new javax.swing.JButton();
+        btnQuitarArchivo = new javax.swing.JButton();
         labelOperaciones1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         textEdicionArchivo = new javax.swing.JTextPane();
@@ -362,13 +362,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelDatos.setForeground(new java.awt.Color(83, 31, 11));
         labelDatos.setText("Requisitos de carga de archivos:");
 
-        registrarInscrp.setBackground(new java.awt.Color(48, 148, 92));
-        registrarInscrp.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
-        registrarInscrp.setForeground(new java.awt.Color(255, 255, 255));
-        registrarInscrp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/importFile.png"))); // NOI18N
-        registrarInscrp.addActionListener(new java.awt.event.ActionListener() {
+        btnSubirArchivo.setBackground(new java.awt.Color(48, 148, 92));
+        btnSubirArchivo.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
+        btnSubirArchivo.setForeground(new java.awt.Color(255, 255, 255));
+        btnSubirArchivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/importFile.png"))); // NOI18N
+        btnSubirArchivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registrarInscrpActionPerformed(evt);
+                btnSubirArchivoActionPerformed(evt);
             }
         });
 
@@ -382,13 +382,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
         txtAreaDirectorioArchivo.setRows(5);
         jScrollPane3.setViewportView(txtAreaDirectorioArchivo);
 
-        registrarInscrp1.setBackground(new java.awt.Color(148, 47, 47));
-        registrarInscrp1.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
-        registrarInscrp1.setForeground(new java.awt.Color(255, 255, 255));
-        registrarInscrp1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/removerArchivo.png"))); // NOI18N
-        registrarInscrp1.addActionListener(new java.awt.event.ActionListener() {
+        btnQuitarArchivo.setBackground(new java.awt.Color(148, 47, 47));
+        btnQuitarArchivo.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
+        btnQuitarArchivo.setForeground(new java.awt.Color(255, 255, 255));
+        btnQuitarArchivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/removerArchivo.png"))); // NOI18N
+        btnQuitarArchivo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                registrarInscrp1ActionPerformed(evt);
+                btnQuitarArchivoActionPerformed(evt);
             }
         });
 
@@ -405,9 +405,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
                             .addComponent(labelDatos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(12, 12, 12)
-                        .addComponent(registrarInscrp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSubirArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(registrarInscrp1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnQuitarArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -419,8 +419,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addComponent(lblTitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(registrarInscrp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, Short.MAX_VALUE)
-                    .addComponent(registrarInscrp, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(btnQuitarArchivo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(btnSubirArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -533,12 +533,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void registrarInscrpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrpActionPerformed
+    private void btnSubirArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubirArchivoActionPerformed
         try {
             //Ejecuta la accion para Elegir el archivo
 
             if (this.manipuladorDirectorios.elegirArchivoEntrada()) {
+
                 ArrayList<String> listaObtenida = this.manipuladorDirectorios.convertirEntrada();
+
+                this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
 
                 this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
 
@@ -546,6 +549,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
                 this.txtAreaDirectorioArchivo.setText(this.manipuladorDirectorios.getPath());
                 this.yaCargado = true;
+
+                this.leerEntradas.analizarEntradas(this.textEdicionArchivo);
             }
 
         } catch (BadLocationException | AnalizadorLexicoException ex) {
@@ -553,14 +558,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
 
 
-    }//GEN-LAST:event_registrarInscrpActionPerformed
+    }//GEN-LAST:event_btnSubirArchivoActionPerformed
 
-    private void registrarInscrp1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrarInscrp1ActionPerformed
+    private void btnQuitarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarArchivoActionPerformed
         //Permite cerrar el archivo que ya fue editado durante el proceso guardando los datos
         if (this.yaCargado) {
 
             if (tomarDecision("Deseas cerrar este archivo cargado\nSe guardaran todos los cambios hechos", "Confirmar cierre")) {
-                
+
                 try {
                     String directorio = this.manipuladorDirectorios.getPath();
 
@@ -579,17 +584,18 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Guardado", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        }else{
-             JOptionPane.showMessageDialog(this,"Todavia no has cargado ningun archivo para poder cerrarlo", "No hay ningun archivo cargado aun", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Todavia no has cargado ningun archivo para poder cerrarlo", "No hay ningun archivo cargado aun", JOptionPane.INFORMATION_MESSAGE);
         }
 
 
-    }//GEN-LAST:event_registrarInscrp1ActionPerformed
+    }//GEN-LAST:event_btnQuitarArchivoActionPerformed
 
     private void textEdicionArchivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textEdicionArchivoKeyReleased
         try {
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+            this.leerEntradas.analizarEntradas(this.textEdicionArchivo);
         } catch (AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         }
@@ -615,6 +621,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnBusquedaPatrones;
     private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnGenerarReportes;
+    private javax.swing.JButton btnQuitarArchivo;
+    private javax.swing.JButton btnSubirArchivo;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -629,8 +637,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel panelBarraPrincipal;
     private javax.swing.JPanel panelPrincipal;
-    private javax.swing.JButton registrarInscrp;
-    private javax.swing.JButton registrarInscrp1;
     private javax.swing.JTextPane textEdicionArchivo;
     private javax.swing.JTextArea txtAreaDirectorioArchivo;
     // End of variables declaration//GEN-END:variables
