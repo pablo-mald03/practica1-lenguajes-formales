@@ -5,8 +5,6 @@
 package com.pablocompany.practicano1lfp.backend;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +27,38 @@ public class ConfigDatos {
     public ConfigDatos() {
         this.comments = new Comentarios();
     }
+
+    //Verifica que sea paralabra reservada
+    public boolean esPalabrasReservadas(String palabra) {
+        return palabrasReservadas.contains(palabra);
+    }
+
+    //Verifica que sea operador matematico
+    public boolean esOperadores(char operador) {
+        return operadores.contains(String.valueOf(operador));
+    }
+
+    //Verifica que sea signo de puntuacion
+    public boolean esPuntuacion(char puntuar) {
+        return puntuacion.contains(String.valueOf(puntuar));
+    }
+
+    //Verifica que sea simbolo de agrupacion
+    public boolean esAgrupacion(char agrupar) {
+        return agrupacion.contains(String.valueOf(agrupar));
+    }
+
+    //Verifica que sea comentario de una sola linea
+    public boolean esComentarioLinea(String entrada) {
+        return entrada.equals(this.comments.getComentarioLinea());
+    }
+    
+    //Verifica que sea comentario multilinea
+    public boolean esBloqueComentario(String inicio, String fin) {
+        return inicio.equals(this.comments.getBloqueInicio())  && fin.equalsIgnoreCase(this.comments.getBloqueFin());
+    }
+    
+    
 
     //Metodo que se encarga de leer y procesar todo a arrayList
     public void cargarDesdeJson() throws ConfigException {

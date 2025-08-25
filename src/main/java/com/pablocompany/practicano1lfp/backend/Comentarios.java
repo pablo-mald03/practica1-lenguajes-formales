@@ -15,29 +15,30 @@ public class Comentarios {
     private String bloqueInicio;
     private String bloqueFin;
 
-    // getters y setters
-    public String getLinea() {
+    // getters y setters para retornar los tipos de comentarios que existen
+    public String getComentarioLinea() {
         return linea;
-    }
-
-    public void setLinea(String linea) {
-        this.linea = linea;
     }
 
     public String getBloqueInicio() {
         return bloqueInicio;
     }
 
-    public void setBloqueInicio(String bloqueInicio) {
-        this.bloqueInicio = bloqueInicio;
-    }
-
+    //Retorna el caracter de bloque de linea 
     public String getBloqueFin() {
         return bloqueFin;
     }
 
+    public void setLinea(String linea) {
+        this.linea = linea;
+    }
+
     public void setBloqueFin(String bloqueFin) {
         this.bloqueFin = bloqueFin;
+    }
+
+    public void setBloqueInicio(String bloqueInicio) {
+        this.bloqueInicio = bloqueInicio;
     }
 
 }

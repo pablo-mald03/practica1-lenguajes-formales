@@ -16,9 +16,9 @@ public class Nodo {
     private int columna;
     private Token tipo;
 
-    public Nodo(char caracter, int linea, int columna, Token tipo) {
+    public Nodo(char caracter, int fila, int columna, Token tipo) {
         this.caracter = caracter;
-        this.linea = linea;
+        this.linea = fila;
         this.columna = columna;
         this.tipo = tipo;
     }
@@ -36,7 +36,7 @@ public class Nodo {
         return columna;
     }
 
-    public Token getTipo() {
+    public Token getToken() {
         return tipo;
     }
     //--------------------------FIN DEL APARTADO DE METODOS QUE SIRVEN PARA PODER SABER EL VALOR DE TOKEN O DE ESTADO---------------------

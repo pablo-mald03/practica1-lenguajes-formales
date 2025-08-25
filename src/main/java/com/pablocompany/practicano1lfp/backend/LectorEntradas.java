@@ -43,7 +43,7 @@ public class LectorEntradas {
     }
 
     //Metodo mas importante para poder analizar el texto y procesarlo
-    public void analizarEntradas(JTextPane paneLog) {
+    public void analizarEntradas(JTextPane paneLog) throws ConfigException {
 
         //Valida si la lista viene vacia o si la principal cadena de entrada esta vacia
         if (this.listaTexto.isEmpty()) {
