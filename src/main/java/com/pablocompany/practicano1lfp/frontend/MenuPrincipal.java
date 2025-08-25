@@ -59,6 +59,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelMedio.cambiarLabel(iconoMedio);
 
         this.txtAreaDirectorioArchivo.setEditable(false);
+        this.textLogErrores.setEditable(false);
         this.textEdicionArchivo.setEditable(true);
         this.textEdicionArchivo.setCaretColor(Color.BLACK);
 
@@ -67,7 +68,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         //Se instancia la clase para poder operar con archivos de texto
         this.manipuladorDirectorios = new ManejadorArchivos();
-        this.leerEntradas = new LectorEntradas();
+        try {
+            this.leerEntradas = new LectorEntradas();
+        } catch (ConfigException ex) {
+            System.out.println("Error de Lectura" + ex.getMessage());
+        }
 
     }
 
@@ -224,6 +229,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
         textEdicionArchivo = new javax.swing.JTextPane();
         lblAnalisis = new javax.swing.JLabel();
         btnAnalisis = new javax.swing.JButton();
+        lblAnalisis1 = new javax.swing.JLabel();
+        scrollAreaEdicion1 = new javax.swing.JScrollPane();
+        textLogErrores = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -265,7 +273,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addComponent(lblEleccion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEleccionesDadas, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 386, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblHome)
                 .addGap(24, 24, 24))
         );
@@ -343,7 +351,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addComponent(btnConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnGenerarReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(294, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         barraLateralLayout.setVerticalGroup(
             barraLateralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -432,8 +440,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelOperaciones1.setText("Archivo de entrada:");
 
         textEdicionArchivo.setBackground(new java.awt.Color(255, 255, 255));
-        textEdicionArchivo.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
-        textEdicionArchivo.setForeground(new java.awt.Color(0, 0, 0));
+        textEdicionArchivo.setFont(new java.awt.Font("Liberation Serif", 1, 20)); // NOI18N
+        textEdicionArchivo.setForeground(new java.awt.Color(115, 112, 112));
         textEdicionArchivo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 textEdicionArchivoKeyReleased(evt);
@@ -455,46 +463,77 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
+        lblAnalisis1.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        lblAnalisis1.setForeground(new java.awt.Color(83, 31, 11));
+        lblAnalisis1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAnalisis1.setText("Errores Encontrados:");
+
+        textLogErrores.setBackground(new java.awt.Color(255, 255, 255));
+        textLogErrores.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
+        textLogErrores.setForeground(new java.awt.Color(140, 1, 25));
+        textLogErrores.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textLogErroresKeyReleased(evt);
+            }
+        });
+        scrollAreaEdicion1.setViewportView(textLogErrores);
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(barraLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addGap(243, 243, 243)
-                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(8, 8, 8)
+                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(lblAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                                        .addGap(235, 235, 235)
+                                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                                        .addGap(2, 2, 2)
+                                        .addComponent(lblAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 6, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrincipalLayout.createSequentialGroup()
-                        .addContainerGap(8, Short.MAX_VALUE)
-                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lblAnalisis, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)))
-                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelOperaciones1, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
-                    .addComponent(scrollAreaEdicion))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(scrollAreaEdicion1)))
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 861, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(scrollAreaEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, 857, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addComponent(barraLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(6, 6, 6)
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(lblAnalisis)
+                        .addGap(12, 12, 12)
+                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblAnalisis1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(scrollAreaEdicion1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(scrollAreaEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblAnalisis)
-                        .addGap(12, 12, 12)
-                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(scrollAreaEdicion, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(barraLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -545,14 +584,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
 
                 //PENDIENTE REMOVER
-                this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
+                //this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
 
                 this.leerEntradas.setLista(listaObtenida, this.textEdicionArchivo);
 
                 this.txtAreaDirectorioArchivo.setText(this.manipuladorDirectorios.getPath());
                 this.yaCargado = true;
 
-                this.leerEntradas.analizarEntradas(this.textEdicionArchivo);
+                this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
 
             }
 
@@ -611,16 +650,16 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
 
         try {
-
-            System.out.println("Pipi");
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
-            this.leerEntradas.analizarEntradas(this.textEdicionArchivo);
+            this.leerEntradas.analizarEntradas(this.textEdicionArchivo,this.textLogErrores);
 
         } catch (AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         } catch (ConfigException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
+        } catch (BadLocationException ex) {
+             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
@@ -633,6 +672,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
             System.out.println("Error " + ex.getMessage());
         }
     }//GEN-LAST:event_btnAnalisisActionPerformed
+
+    private void textLogErroresKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textLogErroresKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textLogErroresKeyReleased
 
     /**
      * @param args the command line arguments
@@ -652,6 +695,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel labelOperaciones1;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblAnalisis;
+    private javax.swing.JLabel lblAnalisis1;
     private javax.swing.JLabel lblEleccion;
     private javax.swing.JLabel lblEleccionesDadas;
     private javax.swing.JLabel lblHome;
@@ -660,7 +704,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel panelBarraPrincipal;
     private javax.swing.JPanel panelPrincipal;
     private javax.swing.JScrollPane scrollAreaEdicion;
+    private javax.swing.JScrollPane scrollAreaEdicion1;
     private javax.swing.JTextPane textEdicionArchivo;
+    private javax.swing.JTextPane textLogErrores;
     private javax.swing.JTextArea txtAreaDirectorioArchivo;
     // End of variables declaration//GEN-END:variables
 }

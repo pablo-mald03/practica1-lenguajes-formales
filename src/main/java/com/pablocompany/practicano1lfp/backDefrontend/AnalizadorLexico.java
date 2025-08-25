@@ -7,9 +7,16 @@ package com.pablocompany.practicano1lfp.backDefrontend;
 import com.pablocompany.practicano1lfp.backend.ConfigDatos;
 import com.pablocompany.practicano1lfp.backend.ConfigException;
 import com.pablocompany.practicano1lfp.backend.Lexema;
+import com.pablocompany.practicano1lfp.backend.Nodo;
 import com.pablocompany.practicano1lfp.backend.Sentencia;
+import com.pablocompany.practicano1lfp.backend.Token;
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -25,13 +32,9 @@ public class AnalizadorLexico {
     // Dígitos
     private final char[] DIGITOS = "0123456789".toCharArray();
 
-    //------------------Subregion de gramatica extraidas del config.json----------------------------
-    
+    //Permite tener la referencia a los datos del json
     private ConfigDatos constantesConfig;
-    
-    //------------------Fin de la Subregion de gramatica extraidas del config.json----------------------------
-    
-    
+
     //==============================FIN DE LA REGION DE APARTADOS DE CONSTANTES GRAMATICA======================================
     //Estructura dinamica encargada de almacenar por completo caracter a caracter
     private ArrayList<Sentencia> listaSentencias = new ArrayList<>(5000);
@@ -39,21 +42,24 @@ public class AnalizadorLexico {
     //Atributo que permite referenciar a la modificacion del JTextPane
     private JTextPane areaAnalisis;
 
+    //Atributo que sirve para exponer los errores
+    private JTextPane logErrores;
+
     //Se conserva una lista para poder dar el paso al analisis de datos (SOLO ES PROVISIONAL)
     private ArrayList<String> listaEntrada = new ArrayList<>(6000);
 
-    public AnalizadorLexico(JTextPane areaAnalisis, ArrayList<String> listaExtraida) throws ConfigException {
+    public AnalizadorLexico(JTextPane areaAnalisis, ArrayList<String> listaExtraida, JTextPane paneErrores, ConfigDatos configuracion) throws ConfigException {
         this.areaAnalisis = areaAnalisis;
+
+        this.logErrores = paneErrores;
         this.listaEntrada = listaExtraida;
-        
-        this.constantesConfig = new ConfigDatos();
-        
-        this.constantesConfig.cargarDesdeJson();
+
+        this.constantesConfig = configuracion;
 
     }
 
     //Metodo que permite inicializar la separacion de lexemas FINALIZADO
-    public void descomponerLexemas() {
+    public void descomponerLexemas() throws BadLocationException {
 
         //Ciclo que permite recorrer linea por linea para ir generando las instancias e indicar en que linea estan 
         for (int i = 0; i < listaEntrada.size(); i++) {
@@ -68,6 +74,8 @@ public class AnalizadorLexico {
             ArrayList<Lexema> lexemaSeparado = new ArrayList<>(5000);
 
             if (filaTexto.isBlank()) {
+                lexemaSeparado.add(new Lexema("", linea));
+                this.listaSentencias.add(new Sentencia(lexemaSeparado, linea));
                 continue;
             }
 
@@ -112,11 +120,15 @@ public class AnalizadorLexico {
 
             for (int j = 0; j < sentenciaActiva.limiteLexemas(); j++) {
 
-                Lexema lexemaDado = sentenciaActiva.getLexema(j);
+                Lexema lexemaDado = sentenciaActiva.getListaLexema(j);
 
                 int fila = lexemaDado.getFilaCoordenada();
 
                 String palabra = lexemaDado.getLexema();
+
+                if (palabra.isBlank()) {
+                    continue;
+                }
 
                 //Metodo que se encarga de separar todos los nodos
                 columna = lexemaDado.separarNodos(palabra, columna, fila);
@@ -125,21 +137,179 @@ public class AnalizadorLexico {
 
         }
 
+        recorrerAnalisis();
+
     }
 
     //============================REGION QUE PERMITE EL ANALISIS DE CADA LEXEMA CON SUS RESPECTIVOS NODOS===========================
     //Metodo principal y unico para analizar cada lexema moviendose entre estados
-    public void recorrerAnalisis() {
+    public void recorrerAnalisis() throws BadLocationException {
 
         for (int i = 0; i < this.listaSentencias.size(); i++) {
 
-            //Sentencia sentenciaActiva = this.listaSentencias.get(i);
-            
-            
-            
+            Sentencia sentenciaActiva = this.listaSentencias.get(i);
+
+            for (int j = 0; j < sentenciaActiva.limiteLexemas(); j++) {
+
+                Lexema lexemaDado = sentenciaActiva.getListaLexema(j);
+
+                String palabra = lexemaDado.getLexema();
+
+                if (palabra.isBlank()) {
+                    continue;
+                }
+
+                if (!lexemaDado.esYaDeclarado()) {
+
+                    if (buscarGeneralizaciones(lexemaDado, sentenciaActiva)) {
+                        continue;
+                    }
+
+                    //Continua viajando entre estados si no es generalidad
+                    //System.out.println("Pilin pilin");
+                }
+            }
+
+        }
+
+        pintarLogSalida();
+
+    }
+
+    //Metodo que sirve cuando la cadena se compone de cierta forma que el token esta escrito literal como en el .json
+    public boolean buscarGeneralizaciones(Lexema lexemaActual, Sentencia lineaPosicionada) {
+
+        //Detecta si es palabra reservada directamente
+        if (this.constantesConfig.esPalabrasReservadas(lexemaActual.getLexema())) {
+            lexemaActual.generalizarNodo(Token.PALABRA_RESERVADA);
+            return true;
+        }
+
+        //Detecta si es operador directamente
+        if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esOperadores(lexemaActual.getLexema().charAt(0))) {
+            lexemaActual.generalizarNodo(Token.OPERADOR);
+            return true;
+        }
+
+        //Detecta si es signo de agrupacion directamente
+        if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esAgrupacion(lexemaActual.getLexema().charAt(0))) {
+            lexemaActual.generalizarNodo(Token.AGRUPACION);
+            return true;
+        }
+
+        //Detecta si es signo de puntuacion directamente
+        if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esPuntuacion(lexemaActual.getLexema().charAt(0))) {
+            lexemaActual.generalizarNodo(Token.PUNTUACION);
+            return true;
+        }
+
+        if (lexemaActual.getLongitudNodo() > 1) {
+
+            //Detecta si es comentario directamente DE UNA LINEA
+            String lexemaInicial = String.valueOf(lexemaActual.getValorNodo(0).getCaracter()) + String.valueOf(lexemaActual.getValorNodo(1).getCaracter());
+
+            if (this.constantesConfig.esComentarioLinea(lexemaInicial)) {
+
+                for (Lexema posicion : lineaPosicionada.obtenerListadoLexemas()) {
+
+                    posicion.generalizarNodo(Token.COMENTARIO_LINEA);
+                    posicion.setYaDeclarado(true);
+                }
+
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //============================FIN DE LA REGION QUE PERMITE EL ANALISIS DE CADA LEXEMA CON SUS RESPECTIVOS NODOS===========================
+    //METODO UNICO QUE SIRVE PARA COLOREAR LOS LOG DE SALIDA
+    public void pintarLogSalida() throws BadLocationException {
+
+        int posicionCaret = this.areaAnalisis.getCaretPosition();
+
+        limpiarAreaAnalisis();
+
+        for (int i = 0; i < this.listaSentencias.size(); i++) {
+
+            Sentencia sentenciaActiva = this.listaSentencias.get(i);
+
+            for (Lexema lexemaDado : sentenciaActiva.obtenerListadoLexemas()) {
+
+                if (lexemaDado.getLexema().isBlank()) {
+                    continue;
+                }
+
+                for (Nodo nodo : lexemaDado.obtenerListaNodo()) {
+
+                    Color colorTexto = obtenerColorPorToken(nodo.getToken());
+
+                    insertarToken(String.valueOf(nodo.getCaracter()), colorTexto);
+
+                }
+                insertarToken(" ", Color.BLACK);
+            }
+
+            insertarToken("\n", Color.BLACK);
+
+        }
+
+        try {
+
+            this.areaAnalisis.setCaretPosition(posicionCaret);
+
+        } catch (Exception e) {
+            this.areaAnalisis.setCaretPosition(0);
         }
 
     }
 
-    //============================FIN DE LA REGION QUE PERMITE EL ANALISIS DE CADA LEXEMA CON SUS RESPECTIVOS NODOS===========================
+    // Método que mapea el token a su color
+    private Color obtenerColorPorToken(Token tipo) {
+        switch (tipo) {
+            case PALABRA_RESERVADA:
+                return Color.BLUE;
+            case IDENTIFICADOR:
+                return new Color(0x6B4627);
+            case NUMERO:
+                return new Color(0x50CC3B);
+            case DECIMAL:
+                return Color.BLACK;
+            case CADENA:
+                return new Color(0xF0760E);
+            case COMENTARIO_LINEA:
+            case COMENTARIO_BLOQUE:
+                return new Color(0x1B6615);
+            case OPERADOR:
+                return new Color(0xC2D106);
+            case AGRUPACION:
+                return new Color(0x991CB8);
+            case ERROR:
+                return Color.RED;
+            default:
+                return new Color(0x737070);
+        }
+    }
+
+    //Metodo que trabaja en conjunto para poder ir pintando letra a letra
+    private void limpiarAreaAnalisis() throws BadLocationException {
+        StyledDocument doc = this.areaAnalisis.getStyledDocument();
+        doc.remove(0, doc.getLength());
+
+    }
+
+    // Método para insertar texto con un color específico
+    private void insertarToken(String texto, Color color) throws BadLocationException {
+
+        StyledDocument doc = this.areaAnalisis.getStyledDocument();
+        // Crear estilo temporal
+        SimpleAttributeSet estilo = new SimpleAttributeSet();
+        StyleConstants.setForeground(estilo, color);
+        // Inserta al final del documento
+        doc.insertString(doc.getLength(), texto, estilo);
+
+    }
+
 }

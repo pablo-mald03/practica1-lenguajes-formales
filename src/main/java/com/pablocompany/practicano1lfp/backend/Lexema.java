@@ -22,22 +22,67 @@ public class Lexema {
     //Representa la linea en la que se encuetra situado el lexema
     private int lineaCoordenada;
     
+    //AYUDA A DECLARAR EL ESTADO INICIAL AL QUE SERA SOMETIDO EN BASE A LA DETECCION DE PATRON
     private Token estadoAnalisis;
+    
+    //ATRIBUTO QUE AYUDA A VALIDAR SI YA EL LEXAMA FUE COMPLETAMENTE PROCESADO
+    //True si ya
+    //False si solo ha sido cambiado de estado pero aun no confirmado
+    private boolean yaDeclarado;
 
     public Lexema(String lexemaGenerado, int lineaCoordenada) {
 
         this.lexemaGenerado = lexemaGenerado;
         this.lineaCoordenada = lineaCoordenada;
+        this.estadoAnalisis = Token.INDEFINIDO;
+        this.yaDeclarado = false; 
     }
 
     //Retorna el lexema por si se necesita 
     public String getLexema() {
         return lexemaGenerado;
     }
+    
+    //Metodo que retorna la longitud del arraylist de nodo
+    public int getLongitudNodo(){
+        return this.listaNodos.size();
+    }
+    
+    //Metodo que sirve para retornar el estado inicial del lexema
+    public Token getEstadoAnalisis(){
+        return this.estadoAnalisis;
+    }
+    
+    //Metodo que sirve para hacer el set total en dado caso de reconocer el token rapido
+     public void setEstadoAnalisis(Token tipoToken){
+        this.estadoAnalisis = tipoToken;
+    }
+
+     //Retorna si el lexema ya fue declarado por completo 
+    public boolean esYaDeclarado() {
+        return this.yaDeclarado;
+    }
+    
+    //Estableque que el lexema ya fue declarado por completo
+    public void setYaDeclarado(boolean declaracion) {
+        this.yaDeclarado = declaracion;
+    }
+    
+    
 
     //Permite saber en todo momento la fila del lexema
     public int getFilaCoordenada() {
         return lineaCoordenada;
+    }
+    
+    //Metodo que retorna la lista de nodos
+    public ArrayList<Nodo> obtenerListaNodo(){
+        return this.listaNodos;
+    }
+    
+    //Metodo que retorna el valor del nodo
+    public Nodo getValorNodo(int indice){
+        return this.listaNodos.get(indice);
     }
 
     //Metodo encargado para ir clasificando los estados y tipos de todas las letras que componen el lexema
@@ -52,15 +97,23 @@ public class Lexema {
             columnaNodo++;
         }
 
-        System.out.println("\ntamanio noditos " + this.listaNodos.size());
-
-        for (Nodo nodito : listaNodos) {
+        /*for (Nodo nodito : listaNodos) {
 
             System.out.println("Nodo: " + nodito.getCaracter() + " Fila: " + nodito.getLinea() + " Columna: " + nodito.getColumna() + " Tipo: " + nodito.getToken().getTipo());
-        }
+        }*/
         
         return columnaNodo;
 
+    }
+    
+    //Metodo que ayuda a hacer el set para declarar rapidamente a un lexema como tipo (SOLO UTIL CUANDO ES ALGO QUE HACE MATCH LITERAL)
+    public void generalizarNodo(Token tipoToken){
+        
+        for (Nodo nodito : this.listaNodos) {
+            nodito.setTipo(tipoToken);
+        }
+        
+        this.setEstadoAnalisis(tipoToken);
     }
 
 }

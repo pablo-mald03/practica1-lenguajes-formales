@@ -25,7 +25,7 @@ public class Sentencia {
     
     
     //Metodo que permite acceder al lexema almacenado en la lista
-    public Lexema getLexema(int indice){
+    public Lexema getListaLexema(int indice){
         return this.listaLexemas.get(indice);
     }
     
@@ -34,6 +34,9 @@ public class Sentencia {
         return this.listaLexemas.size();
     }
     
+    public ArrayList<Lexema> obtenerListadoLexemas(){
+        return this.listaLexemas;
+    }
     
     
     

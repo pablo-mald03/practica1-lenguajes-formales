@@ -24,6 +24,19 @@ public class LectorEntradas {
     //Atributo que permite almacenar en una estructura dinamica todas las lineas de texto registradas
     //Se le da un preset para evitar mucho consumo de memoria por clonacion
     private ArrayList<String> listaTexto = new ArrayList<>(6000);
+    
+     //------------------Subregion de gramatica extraidas del config.json----------------------------
+    
+    private ConfigDatos constantesConfig;
+    
+    
+    public LectorEntradas() throws ConfigException{
+        this.constantesConfig = new ConfigDatos();
+        
+        this.constantesConfig.cargarDesdeJson();
+    }
+    
+    //------------------Fin de la Subregion de gramatica extraidas del config.json----------------------------
 
     //Metodo que permite transformar todo el texto de entrada al arreglo 
     public void transformarTexto(String texto, JTextPane paneLog) throws AnalizadorLexicoException {
@@ -43,7 +56,7 @@ public class LectorEntradas {
     }
 
     //Metodo mas importante para poder analizar el texto y procesarlo
-    public void analizarEntradas(JTextPane paneLog) throws ConfigException {
+    public void analizarEntradas(JTextPane paneLog, JTextPane logErrores) throws ConfigException, BadLocationException {
 
         //Valida si la lista viene vacia o si la principal cadena de entrada esta vacia
         if (this.listaTexto.isEmpty()) {
@@ -57,7 +70,7 @@ public class LectorEntradas {
             return;
         }
 
-        AnalizadorLexico automata = new AnalizadorLexico(paneLog, this.listaTexto);
+        AnalizadorLexico automata = new AnalizadorLexico(paneLog, this.listaTexto, logErrores, this.constantesConfig);
         automata.descomponerLexemas();
 
     }
