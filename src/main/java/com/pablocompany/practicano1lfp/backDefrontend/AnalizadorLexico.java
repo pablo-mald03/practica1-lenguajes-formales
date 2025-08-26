@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -161,7 +162,7 @@ public class AnalizadorLexico {
 
                 if (!lexemaDado.esYaDeclarado()) {
 
-                    if (buscarGeneralizaciones(lexemaDado, sentenciaActiva, this.listaSentencias)) {
+                    if (buscarGeneralizaciones(lexemaDado, sentenciaActiva, this.listaSentencias, (sentenciaActiva.getFilaSentencia() - 1))) {
                         continue;
                     }
 
@@ -177,7 +178,7 @@ public class AnalizadorLexico {
     }
 
     //Metodo que sirve cuando la cadena se compone de cierta forma que el token esta escrito literal como en el .json
-    public boolean buscarGeneralizaciones(Lexema lexemaActual, Sentencia lineaPosicionada, ArrayList<Sentencia> listaSentencias) {
+    public boolean buscarGeneralizaciones(Lexema lexemaActual, Sentencia lineaPosicionada, ArrayList<Sentencia> listaSentencias, int iterador) {
 
         //Detecta si es palabra reservada directamente
         if (this.constantesConfig.esPalabrasReservadas(lexemaActual.getLexema())) {
@@ -225,10 +226,8 @@ public class AnalizadorLexico {
 
         }
 
-        System.out.println("llega a verificar");
         //Busca la generalidad de poder generar un comentario multilinea
         if (lexemaActual.getLongitudNodo() > 1) {
-            System.out.println("Si entra");
 
             //Detecta si es comentario directamente DE UNA LINEA
             String cadenaLexema = String.valueOf(lexemaActual.getValorNodo(0).getCaracter()) + String.valueOf(lexemaActual.getValorNodo(1).getCaracter());
@@ -240,18 +239,20 @@ public class AnalizadorLexico {
 
                 boolean finHallado = false;
 
-                for (Sentencia sentenciaIndex : listaSentencias) {
+                for (int i = iterador; i < listaSentencias.size(); i++) {
+
+                    Sentencia sentenciaIndex = listaSentencias.get(i);
 
                     for (Lexema posicion : sentenciaIndex.obtenerListadoLexemas()) {
 
-                        int indice = posicion.getLongitudNodo()-1;
+                        int indice = posicion.getLongitudNodo() - 1;
+
+                        posicion.generalizarNodo(Token.COMENTARIO_BLOQUE);
+                        posicion.setYaDeclarado(true);
 
                         if (posicion.getLongitudNodo() > 1) {
 
-                            
                             String lineaCierre = String.valueOf(posicion.getValorNodo(indice - 1).getCaracter()) + String.valueOf(posicion.getValorNodo(indice).getCaracter());
-                            posicion.generalizarNodo(Token.COMENTARIO_BLOQUE);
-                            posicion.setYaDeclarado(true);
 
                             if (this.constantesConfig.esBloqueComentarioFin(lineaCierre)) {
                                 finHallado = true;
@@ -281,8 +282,11 @@ public class AnalizadorLexico {
     //METODO UNICO QUE SIRVE PARA COLOREAR LOS LOG DE SALIDA
     public void pintarLogSalida() throws BadLocationException {
 
-        int posicionCaret = this.areaAnalisis.getCaretPosition();
+        int caret = areaAnalisis.getCaretPosition();
+        int lineaCaret = areaAnalisis.getDocument().getDefaultRootElement().getElementIndex(caret);
+        int columnaCaret = caret - areaAnalisis.getDocument().getDefaultRootElement().getElement(lineaCaret).getStartOffset();
 
+        //int posicionCaret = this.areaAnalisis.getCaretPosition();
         limpiarAreaAnalisis();
 
         for (int i = 0; i < this.listaSentencias.size(); i++) {
@@ -311,7 +315,12 @@ public class AnalizadorLexico {
 
         try {
 
-            this.areaAnalisis.setCaretPosition(posicionCaret);
+            Element root = areaAnalisis.getDocument().getDefaultRootElement();
+            if (lineaCaret < root.getElementCount()) {
+
+                int nuevaPos = root.getElement(lineaCaret).getStartOffset() + Math.min(columnaCaret, root.getElement(lineaCaret).getEndOffset() - root.getElement(lineaCaret).getStartOffset() - 1);
+                areaAnalisis.setCaretPosition(nuevaPos);
+            }
 
         } catch (Exception e) {
             this.areaAnalisis.setCaretPosition(0);
@@ -342,7 +351,7 @@ public class AnalizadorLexico {
             case ERROR:
                 return Color.RED;
             default:
-                return new Color(0x737070);
+                return new Color(0x9E7A7A);
         }
     }
 

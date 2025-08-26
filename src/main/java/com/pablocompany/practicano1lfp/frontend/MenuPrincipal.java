@@ -439,7 +439,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelOperaciones1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelOperaciones1.setText("Archivo de entrada:");
 
-        textEdicionArchivo.setBackground(new java.awt.Color(255, 255, 255));
+        textEdicionArchivo.setBackground(new java.awt.Color(228, 228, 228));
         textEdicionArchivo.setFont(new java.awt.Font("Liberation Serif", 1, 20)); // NOI18N
         textEdicionArchivo.setForeground(new java.awt.Color(115, 112, 112));
         textEdicionArchivo.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -468,7 +468,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         lblAnalisis1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblAnalisis1.setText("Errores Encontrados:");
 
-        textLogErrores.setBackground(new java.awt.Color(255, 255, 255));
+        textLogErrores.setBackground(new java.awt.Color(228, 228, 228));
         textLogErrores.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
         textLogErrores.setForeground(new java.awt.Color(140, 1, 25));
         textLogErrores.addKeyListener(new java.awt.event.KeyAdapter() {
