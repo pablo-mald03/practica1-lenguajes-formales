@@ -52,28 +52,31 @@ public class ConfigDatos {
     public boolean esComentarioLinea(String entrada) {
         return entrada.equals(this.comments.getComentarioLinea());
     }
-    
-    //Verifica que sea comentario multilinea
-    public boolean esBloqueComentario(String inicio, String fin) {
-        return inicio.equals(this.comments.getBloqueInicio())  && fin.equalsIgnoreCase(this.comments.getBloqueFin());
+
+    //Metodos de verificacion que permiten Analizarr el comentario fin
+    public boolean esBloqueComentarioInicial(String inicio) {
+        return inicio.equals(this.comments.getBloqueInicio());
     }
-    
-    
+
+    //Verifica que sea comentario multilinea
+    public boolean esBloqueComentarioFin(String fin) {
+        return fin.equalsIgnoreCase(this.comments.getBloqueFin());
+    }
 
     //Metodo que se encarga de leer y procesar todo a arrayList
     public void cargarDesdeJson() throws ConfigException {
 
-        if(!this.palabrasReservadas.isEmpty()){
+        if (!this.palabrasReservadas.isEmpty()) {
             this.palabrasReservadas.clear();
         }
-        
-        if(!this.operadores.isEmpty()){
+
+        if (!this.operadores.isEmpty()) {
             this.operadores.clear();
         }
-        if(!this.puntuacion.isEmpty()){
+        if (!this.puntuacion.isEmpty()) {
             this.puntuacion.clear();
         }
-        if(!this.agrupacion.isEmpty()){
+        if (!this.agrupacion.isEmpty()) {
             this.agrupacion.clear();
         }
 

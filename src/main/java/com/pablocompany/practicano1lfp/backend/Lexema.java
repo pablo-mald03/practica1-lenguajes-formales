@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Lexema {
 
     //Estructura dinamica encargada de almacenar por completo caracter a caracter
-    private ArrayList<Nodo> listaNodos = new ArrayList<>(5000);
+    private ArrayList<Nodo  > listaNodos = new ArrayList<>(5000);
 
     //Atributo que representa el lexema completo de la palabra
     private String lexemaGenerado;

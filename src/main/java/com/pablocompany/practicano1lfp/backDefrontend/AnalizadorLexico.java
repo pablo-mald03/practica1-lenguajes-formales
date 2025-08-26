@@ -161,7 +161,7 @@ public class AnalizadorLexico {
 
                 if (!lexemaDado.esYaDeclarado()) {
 
-                    if (buscarGeneralizaciones(lexemaDado, sentenciaActiva)) {
+                    if (buscarGeneralizaciones(lexemaDado, sentenciaActiva, this.listaSentencias)) {
                         continue;
                     }
 
@@ -177,29 +177,33 @@ public class AnalizadorLexico {
     }
 
     //Metodo que sirve cuando la cadena se compone de cierta forma que el token esta escrito literal como en el .json
-    public boolean buscarGeneralizaciones(Lexema lexemaActual, Sentencia lineaPosicionada) {
+    public boolean buscarGeneralizaciones(Lexema lexemaActual, Sentencia lineaPosicionada, ArrayList<Sentencia> listaSentencias) {
 
         //Detecta si es palabra reservada directamente
         if (this.constantesConfig.esPalabrasReservadas(lexemaActual.getLexema())) {
             lexemaActual.generalizarNodo(Token.PALABRA_RESERVADA);
+            lexemaActual.setYaDeclarado(true);
             return true;
         }
 
         //Detecta si es operador directamente
         if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esOperadores(lexemaActual.getLexema().charAt(0))) {
             lexemaActual.generalizarNodo(Token.OPERADOR);
+            lexemaActual.setYaDeclarado(true);
             return true;
         }
 
         //Detecta si es signo de agrupacion directamente
         if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esAgrupacion(lexemaActual.getLexema().charAt(0))) {
             lexemaActual.generalizarNodo(Token.AGRUPACION);
+            lexemaActual.setYaDeclarado(true);
             return true;
         }
 
         //Detecta si es signo de puntuacion directamente
         if (lexemaActual.getLongitudNodo() == 1 && this.constantesConfig.esPuntuacion(lexemaActual.getLexema().charAt(0))) {
             lexemaActual.generalizarNodo(Token.PUNTUACION);
+            lexemaActual.setYaDeclarado(true);
             return true;
         }
 
@@ -216,9 +220,58 @@ public class AnalizadorLexico {
                     posicion.setYaDeclarado(true);
                 }
 
+                return true;
             }
 
-            return true;
+        }
+
+        System.out.println("llega a verificar");
+        //Busca la generalidad de poder generar un comentario multilinea
+        if (lexemaActual.getLongitudNodo() > 1) {
+            System.out.println("Si entra");
+
+            //Detecta si es comentario directamente DE UNA LINEA
+            String cadenaLexema = String.valueOf(lexemaActual.getValorNodo(0).getCaracter()) + String.valueOf(lexemaActual.getValorNodo(1).getCaracter());
+
+            if (this.constantesConfig.esBloqueComentarioInicial(cadenaLexema)) {
+
+                lexemaActual.generalizarNodo(Token.COMENTARIO_BLOQUE);
+                lexemaActual.setYaDeclarado(true);
+
+                boolean finHallado = false;
+
+                for (Sentencia sentenciaIndex : listaSentencias) {
+
+                    for (Lexema posicion : sentenciaIndex.obtenerListadoLexemas()) {
+
+                        int indice = posicion.getLongitudNodo()-1;
+
+                        if (posicion.getLongitudNodo() > 1) {
+
+                            
+                            String lineaCierre = String.valueOf(posicion.getValorNodo(indice - 1).getCaracter()) + String.valueOf(posicion.getValorNodo(indice).getCaracter());
+                            posicion.generalizarNodo(Token.COMENTARIO_BLOQUE);
+                            posicion.setYaDeclarado(true);
+
+                            if (this.constantesConfig.esBloqueComentarioFin(lineaCierre)) {
+                                finHallado = true;
+
+                                break;
+
+                            }
+                        }
+
+                    }
+
+                    if (finHallado) {
+                        break;
+                    }
+
+                }
+
+                return true;
+            }
+
         }
 
         return false;
