@@ -27,7 +27,6 @@ import javax.swing.text.StyledDocument;
 public class AnalizadorLexico {
 
     //==============================REGION DE APARTADOS DE CONSTANTES GRAMATICA======================================
-
     //Permite tener la referencia a los datos del json
     private ConfigDatos constantesConfig;
 
@@ -37,8 +36,10 @@ public class AnalizadorLexico {
 
     //Atributo que permite referenciar a la modificacion del JTextPane
     private JTextPane areaAnalisis;
-    
+
     private NavegarEstados analizarEstados;
+    
+    private JTextPane logErrores; 
 
     //Se conserva una lista para poder dar el paso al analisis de datos (SOLO ES PROVISIONAL)
     private ArrayList<String> listaEntrada = new ArrayList<>(6000);
@@ -50,13 +51,15 @@ public class AnalizadorLexico {
 
         this.constantesConfig = configuracion;
         
+        this.logErrores = paneErrores;
+
         this.analizarEstados = new NavegarEstados(this.constantesConfig, paneErrores);
 
     }
 
     //Metodo que permite inicializar la separacion de lexemas FINALIZADO
     public void descomponerLexemas(JTextPane pane) throws BadLocationException {
-        
+
         pane.setText("");
 
         //Ciclo que permite recorrer linea por linea para ir generando las instancias e indicar en que linea estan 
@@ -169,7 +172,7 @@ public class AnalizadorLexico {
                     //Continua viajando entre estados si no es un token que se puede generalizar
                     this.analizarEstados.setConstantesConfig(this.constantesConfig);
                     this.analizarEstados.iniciarViajeEstados(lexemaDado);
-                    
+
                 }
             }
 
@@ -223,6 +226,13 @@ public class AnalizadorLexico {
                     posicion.setYaDeclarado(true);
                 }
 
+                return true;
+            }
+
+            if (lexemaActual.getValorNodo(0).getCaracter() == '/' && lexemaActual.getValorNodo(1).getCaracter() != '/' && lexemaActual.getValorNodo(1).getCaracter() != '*') {
+                lexemaActual.generalizarNodo(Token.ERROR);
+                lexemaActual.setYaDeclarado(true);
+                lexemaActual.setLexemaError(lexemaActual.getLexema() + " Formato no apropiado de comentario. NO TOKEN");
                 return true;
             }
 
@@ -326,6 +336,34 @@ public class AnalizadorLexico {
 
         } catch (Exception e) {
             this.areaAnalisis.setCaretPosition(0);
+        }
+
+        mostrarErrores();
+
+    }
+
+    //Metodo encargado de imprimir los errores en el log de errores
+    private void mostrarErrores() {
+
+        ArrayList<String> listaErrores = new ArrayList<>(5000);
+        
+        
+        for (int i = 0; i < this.listaSentencias.size(); i++) {
+
+            Sentencia sentenciaActiva = this.listaSentencias.get(i);
+
+            for (Lexema lexemaDado : sentenciaActiva.obtenerListadoLexemas()) {
+
+                if (lexemaDado.getLexema().isBlank()) {
+                    continue;
+                }
+
+                if (!lexemaDado.getCadenaError().isBlank()) {
+                    this.logErrores.setText(this.logErrores.getText() + lexemaDado.getLexema() + " <- Error, en " + lexemaDado.getCadenaError() + "\n");
+                }
+
+            }
+
         }
 
     }

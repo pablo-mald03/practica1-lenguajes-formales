@@ -113,7 +113,7 @@ public class NavegarEstados {
                     }
 
                 } catch (ErrorPuntualException ex2) {
-                    System.out.println("Esto no deberia de pasar" + ex2.getMessage());
+                    System.out.println("Caracter no registrado en la gramatica " + ex2.getMessage());
                 }
 
             }
@@ -175,7 +175,7 @@ public class NavegarEstados {
                 break;
 
             default:
-                throw new ErrorPuntualException("Cadena no encontrada");
+                throw new ErrorPuntualException(String.valueOf(nodoActual.getCaracter()));
 
         }
 
@@ -199,7 +199,7 @@ public class NavegarEstados {
             if (limite < 2) {
                 nodoAnalisis.setTipo(Token.ERROR);
                 nodoAnalisis.setComodin(true);
-                throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, en " + lexemaParametro.getLexema() + " TOKEN " + Token.CADENA.getTipo() + "= \"");
+                throw new ErrorPuntualException(lexemaParametro.getLexema() + " " + lexemaParametro.getLexema() + " TOKEN " + Token.CADENA.getTipo() + "= \"");
             }
 
             Nodo nodoTemporal = lexemaParametro.getValorNodo(lexemaParametro.getLongitudNodo() - 1);
@@ -209,7 +209,7 @@ public class NavegarEstados {
             if (!String.valueOf(nodoCaracterFin).equals("\"")) {
                 nodoTemporal.setTipo(Token.ERROR);
                 nodoTemporal.setComodin(true);
-                throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, No tiene comillas de cierre. NO TOKEN");
+                throw new ErrorPuntualException(lexemaParametro.getLexema() + " No tiene comillas de cierre. NO TOKEN");
             }
 
             lexemaParametro.setEstadoAnalisis(Token.CADENA);
@@ -225,7 +225,7 @@ public class NavegarEstados {
         if (!String.valueOf(nodoCaracterInicio).equals("\"") && String.valueOf(nodoCaracterTemporalFin).equals("\"")) {
             nodoTemporal1.setTipo(Token.ERROR);
             nodoTemporal1.setComodin(true);
-            throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, No tiene comillas de apertura. NO TOKEN");
+            throw new ErrorPuntualException(lexemaParametro.getLexema() + " No tiene comillas de apertura. NO TOKEN");
         }
 
         //Declara el estado de analisis como identificador
@@ -261,7 +261,7 @@ public class NavegarEstados {
         
         if (!this.constantesConfig.esAgrupacion(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Signo de agrupacion no registrado en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Signo de agrupacion no registrado en " + palabraEvaluada);
         }
 
         nodoActual.setTipo(Token.AGRUPACION);
@@ -274,7 +274,7 @@ public class NavegarEstados {
 
         if (!this.constantesConfig.esOperadores(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Operador no registrado en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Operador no registrado en " + palabraEvaluada);
         }
 
         nodoActual.setTipo(Token.OPERADOR);
@@ -289,12 +289,12 @@ public class NavegarEstados {
 
         if (this.constantesConfig.esAgrupacion(caracterNodo) || this.constantesConfig.esOperadores(caracterNodo) || this.constantesConfig.esPuntuacion(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Caracter especial no permitido en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Caracter especial no permitido en " + palabraEvaluada);
         }
 
         if (!esLetra(caracterNodo) && !esDigito(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", No es letra ni numero en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" No es letra ni numero en " + palabraEvaluada);
         }
 
         nodoActual.setTipo(Token.IDENTIFICADOR);
@@ -327,17 +327,17 @@ public class NavegarEstados {
 
         if (esLetra(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Letras no permitidas en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Letras no permitidas en " + palabraEvaluada);
         }
 
         if (this.constantesConfig.esAgrupacion(caracterNodo) || this.constantesConfig.esOperadores(caracterNodo) || this.constantesConfig.esPuntuacion(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Caracter especial no permitido en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Caracter especial no permitido en " + palabraEvaluada);
         }
 
         if (!esDigito(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Caracter no admitido " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Caracter no admitido " + palabraEvaluada);
         }
 
         nodoActual.setTipo(Token.NUMERO);
@@ -362,24 +362,24 @@ public class NavegarEstados {
 
         if (contadorPuntos > 1) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", No se puede poner doble punto decimal en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" No se puede poner doble punto decimal en " + palabraEvaluada);
         }
 
         if (esLetra(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Letras no permitidas en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Letras no permitidas en " + palabraEvaluada);
         }
 
         if (!esDigito(caracterNodo) && caracterNodo != '.') {
 
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Caracter no admitido " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Caracter no admitido " + palabraEvaluada);
         }
 
         if ((indice == lexemaUtilizado.getLongitudNodo() - 1) && lexemaUtilizado.getValorNodo(indice).getCaracter() == '.') {
 
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Sin digitos despues del punto en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Sin digitos despues del punto en " + palabraEvaluada);
         }
 
         nodoActual.setTipo(Token.DECIMAL);
@@ -395,7 +395,7 @@ public class NavegarEstados {
 
         if (!valorVacio.isBlank() && caracterNodo != '"' && !esLetra(caracterNodo) && !esDigito(caracterNodo) && !this.constantesConfig.esAgrupacion(caracterNodo) && !this.constantesConfig.esOperadores(caracterNodo) && !this.constantesConfig.esPuntuacion(caracterNodo)) {
             nodoActual.setComodin(true);
-            throw new ErrorGramaticoException(", Caracter no admitido en " + palabraEvaluada);
+            throw new ErrorGramaticoException(" Caracter no admitido en " + palabraEvaluada);
         }
 
         if (indice > 0 && lexemaUtilizado.getValorNodo(indice - 1).getToken() == Token.ERROR) {
