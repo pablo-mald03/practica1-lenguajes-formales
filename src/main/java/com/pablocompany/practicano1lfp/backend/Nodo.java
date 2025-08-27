@@ -15,13 +15,28 @@ public class Nodo {
     private int linea;
     private int columna;
     private Token tipo;
+    //Permite ubicar cual fue el nodo que fallo
+    //true es el causante del fallo
+    private boolean comodinError;
 
     public Nodo(char caracter, int fila, int columna, Token tipo) {
         this.caracter = caracter;
         this.linea = fila;
         this.columna = columna;
         this.tipo = tipo;
+        this.comodinError = false; 
     }
+
+    //Ayudan a ubicar rapidamente cual es el token comodin para empezar a ciclar para atras
+    public boolean esComodin() {
+        return comodinError;
+    }
+
+    //Ayuda a hacer el set para comodin de error
+    public void setComodin(boolean comodin) {
+        this.comodinError = comodin;
+    }
+    
 
     //--------------------------APARTADO DE METODOS QUE SIRVEN PARA PODER SABER EL VALOR DE TOKEN O DE ESTADO---------------------
     public char getCaracter() {

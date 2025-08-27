@@ -71,7 +71,7 @@ public class LectorEntradas {
         }
 
         AnalizadorLexico automata = new AnalizadorLexico(paneLog, this.listaTexto, logErrores, this.constantesConfig);
-        automata.descomponerLexemas();
+        automata.descomponerLexemas(logErrores);
 
     }
 

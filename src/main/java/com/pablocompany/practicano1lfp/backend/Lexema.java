@@ -4,6 +4,8 @@
  */
 package com.pablocompany.practicano1lfp.backend;
 
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import java.util.ArrayList;
 
 /**
@@ -14,17 +16,17 @@ import java.util.ArrayList;
 public class Lexema {
 
     //Estructura dinamica encargada de almacenar por completo caracter a caracter
-    private ArrayList<Nodo  > listaNodos = new ArrayList<>(5000);
+    private ArrayList<Nodo> listaNodos = new ArrayList<>(5000);
 
     //Atributo que representa el lexema completo de la palabra
     private String lexemaGenerado;
 
     //Representa la linea en la que se encuetra situado el lexema
     private int lineaCoordenada;
-    
+
     //AYUDA A DECLARAR EL ESTADO INICIAL AL QUE SERA SOMETIDO EN BASE A LA DETECCION DE PATRON
     private Token estadoAnalisis;
-    
+
     //ATRIBUTO QUE AYUDA A VALIDAR SI YA EL LEXAMA FUE COMPLETAMENTE PROCESADO
     //True si ya
     //False si solo ha sido cambiado de estado pero aun no confirmado
@@ -35,53 +37,51 @@ public class Lexema {
         this.lexemaGenerado = lexemaGenerado;
         this.lineaCoordenada = lineaCoordenada;
         this.estadoAnalisis = Token.INDEFINIDO;
-        this.yaDeclarado = false; 
+        this.yaDeclarado = false;
     }
 
     //Retorna el lexema por si se necesita 
     public String getLexema() {
         return lexemaGenerado;
     }
-    
+
     //Metodo que retorna la longitud del arraylist de nodo
-    public int getLongitudNodo(){
+    public int getLongitudNodo() {
         return this.listaNodos.size();
     }
-    
+
     //Metodo que sirve para retornar el estado inicial del lexema
-    public Token getEstadoAnalisis(){
+    public Token getEstadoAnalisis() {
         return this.estadoAnalisis;
     }
-    
+
     //Metodo que sirve para hacer el set total en dado caso de reconocer el token rapido
-     public void setEstadoAnalisis(Token tipoToken){
+    public void setEstadoAnalisis(Token tipoToken) {
         this.estadoAnalisis = tipoToken;
     }
 
-     //Retorna si el lexema ya fue declarado por completo 
+    //Retorna si el lexema ya fue declarado por completo 
     public boolean esYaDeclarado() {
         return this.yaDeclarado;
     }
-    
+
     //Estableque que el lexema ya fue declarado por completo
     public void setYaDeclarado(boolean declaracion) {
         this.yaDeclarado = declaracion;
     }
-    
-    
 
     //Permite saber en todo momento la fila del lexema
     public int getFilaCoordenada() {
         return lineaCoordenada;
     }
-    
+
     //Metodo que retorna la lista de nodos
-    public ArrayList<Nodo> obtenerListaNodo(){
+    public ArrayList<Nodo> obtenerListaNodo() {
         return this.listaNodos;
     }
-    
+
     //Metodo que retorna el valor del nodo
-    public Nodo getValorNodo(int indice){
+    public Nodo getValorNodo(int indice) {
         return this.listaNodos.get(indice);
     }
 
@@ -89,7 +89,7 @@ public class Lexema {
     public int separarNodos(String palabra, int columna, int fila) {
 
         int columnaNodo = columna;
-        
+
         for (int i = 0; i < palabra.length(); i++) {
 
             char caracter = palabra.charAt(i);
@@ -101,19 +101,37 @@ public class Lexema {
 
             System.out.println("Nodo: " + nodito.getCaracter() + " Fila: " + nodito.getLinea() + " Columna: " + nodito.getColumna() + " Tipo: " + nodito.getToken().getTipo());
         }*/
-        
         return columnaNodo;
 
     }
-    
+
     //Metodo que ayuda a hacer el set para declarar rapidamente a un lexema como tipo (SOLO UTIL CUANDO ES ALGO QUE HACE MATCH LITERAL)
-    public void generalizarNodo(Token tipoToken){
-        
+    public void generalizarNodo(Token tipoToken) {
+
         for (Nodo nodito : this.listaNodos) {
             nodito.setTipo(tipoToken);
         }
-        
+
         this.setEstadoAnalisis(tipoToken);
+    }
+
+    //Metodo que sirve para poder ubicar el indice del nodo que causo el error
+    public int getIndiceError() throws AnalizadorLexicoException {
+
+        for (int i = 0; i < listaNodos.size(); i++) {
+
+            Nodo nodoIterado = this.listaNodos.get(i);
+
+            if (nodoIterado.esComodin()) {
+
+                nodoIterado.setComodin(false);
+                return i;
+            }
+
+        }
+
+        throw new AnalizadorLexicoException("No se ha encontrado el indice del nodo");
+
     }
 
 }

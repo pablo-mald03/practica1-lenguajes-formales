@@ -1,0 +1,248 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.pablocompany.practicano1lfp.backDefrontend;
+
+import com.pablocompany.practicano1lfp.backend.ConfigDatos;
+import com.pablocompany.practicano1lfp.backend.ErrorEncontradoException;
+import com.pablocompany.practicano1lfp.backend.ErrorGramaticoException;
+import com.pablocompany.practicano1lfp.backend.ErrorPuntualException;
+import com.pablocompany.practicano1lfp.backend.Lexema;
+import com.pablocompany.practicano1lfp.backend.Nodo;
+import com.pablocompany.practicano1lfp.backend.Token;
+import javax.swing.JTextPane;
+
+/**
+ *
+ * @author pablo
+ */
+//Clase que permite hacer toda la interaccion entre la navegacion entre estados de analisis
+//Permite crear un automata finito que va navegando entre sus propios estados para poder determinar el tipo de token
+public class NavegarEstados {
+
+    private Lexema lexemaAnalisis;
+
+    //==============================REGION DE APARTADOS DE CONSTANTES GRAMATICA======================================
+    // Letras
+    private final String ABECEDARIO = "abcdefghijklmnopqrstuvwxyz";
+    private final String DIGITOS = "0123456789";
+    //Permite tener la referencia a los datos del json
+    private ConfigDatos constantesConfig;
+
+    //Atributo que sirve para exponer los errores
+    private JTextPane logErrores;
+
+    //==============================FIN DE LA REGION DE APARTADOS DE CONSTANTES GRAMATICA======================================
+    public NavegarEstados(ConfigDatos constantesConfig, JTextPane logErrores) {
+        this.constantesConfig = constantesConfig;
+        this.logErrores = logErrores;
+    }
+
+    //Metodo simplificado para simular el match de caracteres
+    //Detecta si existe el caracter en la gramatica
+    public boolean esLetra(char c) {
+        String caracter = String.valueOf(c).toLowerCase();
+        return ABECEDARIO.contains(caracter);
+    }
+
+    public boolean esDigito(char c) {
+        String caracter = String.valueOf(c).toLowerCase();
+        return DIGITOS.contains(caracter);
+    }
+
+    //Metodo que ayuda a tener permanentemente al tanto la referencia del config
+    public void setConstantesConfig(ConfigDatos constantesConfig) {
+        this.constantesConfig = constantesConfig;
+        if (this.lexemaAnalisis != null) {
+            this.lexemaAnalisis = null;
+        }
+    }
+
+    //Metodo PRINCIPAL que ejecuta el viaje entre estados de analisis 
+    public void iniciarViajeEstados(Lexema lexemaActual) {
+
+        this.logErrores.setText("");
+
+        this.lexemaAnalisis = lexemaActual;
+
+        if (lexemaActual.getLexema().isBlank()) {
+            return;
+        }
+
+        try {
+            declararEstadoInicial(this.lexemaAnalisis, this.lexemaAnalisis.getValorNodo(0));
+
+            for (int j = 0; j < this.lexemaAnalisis.getLongitudNodo(); j++) {
+                Nodo nodoAnalizado = this.lexemaAnalisis.getValorNodo(j);
+                try {
+
+                    if (nodoAnalizado.getToken() != Token.ERROR) {
+                        viajarEstado(nodoAnalizado, this.lexemaAnalisis.getEstadoAnalisis(), this.lexemaAnalisis, j);
+                    }
+
+                } catch (ErrorGramaticoException ex) {
+
+                    try {
+
+                        int indiceError = this.lexemaAnalisis.getIndiceError();
+
+                        this.lexemaAnalisis.getValorNodo(indiceError).setComodin(false);
+
+                        for (int i = indiceError; i >= 0; i--) {
+
+                            Nodo nodoError = this.lexemaAnalisis.getValorNodo(i);
+                            nodoError.setTipo(Token.ERROR);
+                        }
+
+                        declararEstadoInicial(this.lexemaAnalisis, this.lexemaAnalisis.getValorNodo(indiceError + 1));
+
+                    } catch (AnalizadorLexicoException ex1) {
+                        System.out.println("No se encontro indice sdfsdfds" + ex1.getMessage());
+                    }
+
+                } catch (ErrorPuntualException ex2) {
+                    System.out.println("Esto no deberia de pasar" + ex2.getMessage());
+                }
+
+            }
+
+        } catch (ErrorPuntualException ex) {
+            try {
+
+                int indiceError = this.lexemaAnalisis.getIndiceError();
+
+                this.lexemaAnalisis.getValorNodo(indiceError).setComodin(false);
+
+                for (int i = indiceError; i >= 0; i--) {
+
+                    Nodo nodoError = this.lexemaAnalisis.getValorNodo(i);
+                    nodoError.setTipo(Token.ERROR);
+                }
+
+                this.logErrores.setText(this.logErrores.getText() + ex.getMessage() + "\n");
+
+            } catch (AnalizadorLexicoException ex1) {
+                System.out.println("No se encontro indice " + ex1.getMessage());
+            }
+
+        }
+
+    }
+
+    //Metodo que sirve para seleccionar estado al que va estar viajando el analizador
+    public void viajarEstado(Nodo nodoActual, Token tokenDeclarado, Lexema lexemaInicial, int iteracion) throws ErrorGramaticoException, ErrorPuntualException {
+
+        switch (tokenDeclarado) {
+
+            case PALABRA_RESERVADA:
+
+                break;
+
+            case IDENTIFICADOR:
+                break;
+
+            case NUMERO:
+                break;
+
+            case DECIMAL:
+                break;
+
+            case CADENA:
+                estadoCadena(nodoActual, lexemaInicial, iteracion);
+                break;
+
+            case OPERADOR:
+                break;
+
+            case AGRUPACION:
+                break;
+
+            default:
+                throw new ErrorPuntualException("Cadena no encontrada");
+
+        }
+
+    }
+
+    //Metodo util para declarar el estado inicial de inicio de lectura PENDIENTE
+    public void declararEstadoInicial(Lexema lexemaParametro, Nodo nodoReferencia) throws ErrorPuntualException {
+
+        Nodo nodoAnalisis = nodoReferencia;
+
+        char nodoCaracterInicio = nodoAnalisis.getCaracter();
+
+        if (String.valueOf(nodoCaracterInicio).equals("\"")) {
+
+            int limite = lexemaParametro.getLongitudNodo();
+
+            if (limite < 2) {
+                nodoAnalisis.setTipo(Token.ERROR);
+                nodoAnalisis.setComodin(true);
+                throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, en " + lexemaParametro.getLexema() + " TOKEN " + Token.CADENA.getTipo() + "= \"");
+            }
+
+            Nodo nodoTemporal = lexemaParametro.getValorNodo(lexemaParametro.getLongitudNodo() - 1);
+
+            char nodoCaracterFin = nodoTemporal.getCaracter();
+
+            if (!String.valueOf(nodoCaracterFin).equals("\"")) {
+                nodoTemporal.setTipo(Token.ERROR);
+                nodoTemporal.setComodin(true);
+                throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, No tiene \" de cierre. NO TOKEN");
+            }
+
+            lexemaParametro.setEstadoAnalisis(Token.CADENA);
+            return;
+
+        }
+
+        //Declara el estado de analisis como numerico
+        if (esLetra(nodoCaracterInicio)) {
+            lexemaParametro.setEstadoAnalisis(Token.IDENTIFICADOR);
+            return;
+        }
+
+        if (esDigito(nodoCaracterInicio)) {
+            lexemaParametro.setEstadoAnalisis(Token.NUMERO);
+            return;
+        }
+
+    }
+
+    //===========================APARTADO DE METODOS QUE SIRVEN PARA IR DECLARANDO ESTADOS================================
+    //Metodo que analiza los estados numericos
+    public void estadoNumerico(Nodo nodoExtraido, Lexema lexemaEncontrado) {
+
+        int indice = lexemaEncontrado.getLexema().indexOf(".");
+
+        if (indice > 1) {
+            // throw new ErrorEncontradoException(mensaje);
+        }
+
+    }
+
+    //Metodo que permite analizar el estado de cadenas de texto
+    //indice representa el indice en el nodo actual
+    public void estadoCadena(Nodo nodoActual, Lexema lexemaUtilizado, int indice) throws ErrorGramaticoException {
+
+        char caracterNodo = nodoActual.getCaracter();
+
+        String valorVacio = String.valueOf(caracterNodo);
+
+        if (!valorVacio.isBlank() && caracterNodo != '"' && !esLetra(caracterNodo) && !esDigito(caracterNodo) && !this.constantesConfig.esAgrupacion(caracterNodo) && !this.constantesConfig.esOperadores(caracterNodo) && !this.constantesConfig.esPuntuacion(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException();
+        }
+
+        //PENDIENTE SOLUCIONAR ESE BUG DE ESCRITURA
+        if (indice > 0 && lexemaUtilizado.getValorNodo(indice - 1).getToken() == Token.ERROR) {
+            nodoActual.setTipo(Token.ERROR);
+            return;
+        }
+
+        nodoActual.setTipo(Token.CADENA);
+    }
+
+    //===========================FIN DEL APARTADO DE METODOS QUE SIRVEN PARA IR DECLARANDO ESTADOS==============================
+}

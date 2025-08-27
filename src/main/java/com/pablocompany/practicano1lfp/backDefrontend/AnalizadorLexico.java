@@ -27,11 +27,6 @@ import javax.swing.text.StyledDocument;
 public class AnalizadorLexico {
 
     //==============================REGION DE APARTADOS DE CONSTANTES GRAMATICA======================================
-    // Letras
-    private final char[] ABECEDARIO = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-
-    // Dígitos
-    private final char[] DIGITOS = "0123456789".toCharArray();
 
     //Permite tener la referencia a los datos del json
     private ConfigDatos constantesConfig;
@@ -42,9 +37,8 @@ public class AnalizadorLexico {
 
     //Atributo que permite referenciar a la modificacion del JTextPane
     private JTextPane areaAnalisis;
-
-    //Atributo que sirve para exponer los errores
-    private JTextPane logErrores;
+    
+    private NavegarEstados analizarEstados;
 
     //Se conserva una lista para poder dar el paso al analisis de datos (SOLO ES PROVISIONAL)
     private ArrayList<String> listaEntrada = new ArrayList<>(6000);
@@ -52,21 +46,24 @@ public class AnalizadorLexico {
     public AnalizadorLexico(JTextPane areaAnalisis, ArrayList<String> listaExtraida, JTextPane paneErrores, ConfigDatos configuracion) throws ConfigException {
         this.areaAnalisis = areaAnalisis;
 
-        this.logErrores = paneErrores;
         this.listaEntrada = listaExtraida;
 
         this.constantesConfig = configuracion;
+        
+        this.analizarEstados = new NavegarEstados(this.constantesConfig, paneErrores);
 
     }
 
     //Metodo que permite inicializar la separacion de lexemas FINALIZADO
-    public void descomponerLexemas() throws BadLocationException {
+    public void descomponerLexemas(JTextPane pane) throws BadLocationException {
+        
+        pane.setText("");
 
         //Ciclo que permite recorrer linea por linea para ir generando las instancias e indicar en que linea estan 
         for (int i = 0; i < listaEntrada.size(); i++) {
             int linea = i + 1;
 
-            String filaTexto = listaEntrada.get(i);
+            String filaTexto = listaEntrada.get(i).trim();
 
             StringBuilder cadenaCompleta = new StringBuilder();
 
@@ -156,18 +153,23 @@ public class AnalizadorLexico {
 
                 String palabra = lexemaDado.getLexema();
 
+                //Evita todas las lineas en blanco que existan
                 if (palabra.isBlank()) {
                     continue;
                 }
 
                 if (!lexemaDado.esYaDeclarado()) {
 
+                    //Metodo que busca generalizar o hacer match lo mas rapido posible con un token del json
+                    //Aprovecha para declarar comentarios y permitir seguir analizando los estados
                     if (buscarGeneralizaciones(lexemaDado, sentenciaActiva, this.listaSentencias, (sentenciaActiva.getFilaSentencia() - 1))) {
                         continue;
                     }
 
-                    //Continua viajando entre estados si no es generalidad
-                    //System.out.println("Pilin pilin");
+                    //Continua viajando entre estados si no es un token que se puede generalizar
+                    this.analizarEstados.setConstantesConfig(this.constantesConfig);
+                    this.analizarEstados.iniciarViajeEstados(lexemaDado);
+                    
                 }
             }
 
