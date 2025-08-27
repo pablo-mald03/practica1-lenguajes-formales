@@ -25,6 +25,9 @@ public class LectorEntradas {
     //Se le da un preset para evitar mucho consumo de memoria por clonacion
     private ArrayList<String> listaTexto = new ArrayList<>(6000);
     
+    //Clase que intercomunica al lexer actual para poderlo operar internamente en UI
+    public GestorLexer lexerActual;
+    
      //------------------Subregion de gramatica extraidas del config.json----------------------------
     
     private ConfigDatos constantesConfig;
@@ -34,6 +37,7 @@ public class LectorEntradas {
         this.constantesConfig = new ConfigDatos();
         
         this.constantesConfig.cargarDesdeJson();
+        this.lexerActual = new GestorLexer();
     }
     
     //------------------Fin de la Subregion de gramatica extraidas del config.json----------------------------
@@ -72,6 +76,8 @@ public class LectorEntradas {
 
         AnalizadorLexico automata = new AnalizadorLexico(paneLog, this.listaTexto, logErrores, this.constantesConfig);
         automata.descomponerLexemas(logErrores);
+        
+        this.lexerActual.setLexer(automata);
 
     }
 
@@ -91,6 +97,11 @@ public class LectorEntradas {
         for (int i = 0; i < listaExtraida.size(); i++) {
             doc.insertString(doc.getLength(), listaExtraida.get(i) + "\n", null);
         }
+    }
+    
+    //Metodo que permite retornar el analizador lexico instanciado en el momento
+    public AnalizadorLexico getLexerActual(){
+        return this.lexerActual.getLexer();
     }
 
 }

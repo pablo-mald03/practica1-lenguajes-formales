@@ -4,11 +4,14 @@
  */
 package com.pablocompany.practicano1lfp.frontend;
 
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
 import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
 import com.pablocompany.practicano1lfp.backend.ConfigDatos;
 import com.pablocompany.practicano1lfp.backend.ConfigException;
+import com.pablocompany.practicano1lfp.backend.ErrorEncontradoException;
+import com.pablocompany.practicano1lfp.backend.ErrorPuntualException;
 import com.pablocompany.practicano1lfp.backend.LectorEntradas;
 import com.pablocompany.practicano1lfp.backend.ManejadorArchivos;
 import java.awt.Color;
@@ -58,6 +61,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
         labelMedio.cambiarLabel(iconoMedio);
 
+        this.txtLogBusquedas.setEditable(false);
         this.txtAreaDirectorioArchivo.setEditable(false);
         this.textLogErrores.setEditable(false);
         this.textEdicionArchivo.setEditable(true);
@@ -94,20 +98,53 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //Metodo que se utiliza para manejar todos los componentes y funciones previas al muestreo de busquedas
     public void operarBusquedas() {
 
+        this.textEdicionArchivo.setEditable(false);
+        this.btnAnalisis.setVisible(false);
+        this.scrollErroresLog.setVisible(false);
+        this.scrollBusquedas.setVisible(true);
+        this.txtLogBusquedas.setText("");
+        this.lblMostrarError.setText("Resultados de busqueda:");
+        this.lblAnalisis.setText("Busqueda de patrones:");
+        this.txtBusquedas.setVisible(true);
+        this.btnSubirArchivo.setEnabled(false);
+        this.btnGuardarArchivo.setText("Buscar Patron");
+        this.btnQuitarArchivo.setEnabled(false);
+        this.btnGuardarArchivo.setEnabled(true);
+
+        this.txtBusquedas.requestFocusInWindow();
+
     }
 
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
     public void modificarConfig() {
+        //Se despliega la ventana emergente para editar la configuracion
 
     }
 
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
     public void operarReportes() {
+        //Se despliega la ventana emergente para La generacion de reportes
 
     }
 
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
     public void reestablecerUI() {
+        this.textEdicionArchivo.setEditable(true);
+        this.btnAnalisis.setVisible(true);
+        this.txtLogBusquedas.setText("");
+        this.scrollErroresLog.setVisible(true);
+        this.scrollBusquedas.setVisible(false);
+        this.txtBusquedas.setText("");
+        this.lblAnalisis.setText("Analizar Manualmente:");
+        this.lblMostrarError.setText("Errores Encontrados:");
+        this.txtBusquedas.setVisible(false);
+        this.btnSubirArchivo.setEnabled(true);
+        this.btnGuardarArchivo.setText("Guardar Texto");
+        this.btnQuitarArchivo.setEnabled(true);
+
+        if (this.yaCargado) {
+            this.btnGuardarArchivo.setEnabled(false);
+        }
 
     }
 
@@ -115,8 +152,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //------------------------------------APARTADO DE METODOS QUE SE UTILIZAN PARA DINAMIZAR LA UI---------------------------
     //Metodo que sirve para poder mostrar la seleccion de la busqueda de palabras
     //1 busqueda de palabras
-    //2 Edicion del archivo config 
-    //3 Visualizacion de reportes
+    //0 reinicia la UI PRINCIPAL
     public void mostrarBusquedas() {
 
         ImageIcon iconoMedio = new ImageIcon(getClass().getResource("/com/pablocompany/practicano1/target/images/busquedaDatos.png"));
@@ -146,9 +182,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelMedio.cambiarLabel(iconoMedio);
         this.lblEleccionesDadas.setText("Editar Configuracion");
 
-        //Reinicia el permiso para accionar botones
-        this.gestionVentanas = 2;
-
         modificarConfig();
 
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
@@ -165,9 +198,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         IlustrarLabels labelMedio = new IlustrarLabels(this.panelBarraPrincipal, 50, 50, "", this.lblEleccion);
         labelMedio.cambiarLabel(iconoMedio);
         this.lblEleccionesDadas.setText("Generar Reportes");
-
-        //Reinicia el permiso para accionar botones
-        this.gestionVentanas = 3;
 
         operarReportes();
 
@@ -229,13 +259,15 @@ public class MenuPrincipal extends javax.swing.JFrame {
         scrollAreaEdicion = new javax.swing.JScrollPane();
         textEdicionArchivo = new javax.swing.JTextPane();
         jPanel2 = new javax.swing.JPanel();
-        scrollAreaEdicion1 = new javax.swing.JScrollPane();
+        scrollErroresLog = new javax.swing.JScrollPane();
         textLogErrores = new javax.swing.JTextPane();
-        lblAnalisis1 = new javax.swing.JLabel();
+        lblMostrarError = new javax.swing.JLabel();
         btnGuardarArchivo = new javax.swing.JButton();
         btnAnalisis = new javax.swing.JButton();
         txtBusquedas = new javax.swing.JTextField();
         lblAnalisis = new javax.swing.JLabel();
+        scrollBusquedas = new javax.swing.JScrollPane();
+        txtLogBusquedas = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -458,24 +490,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jPanel2.setLayout(null);
 
         textLogErrores.setBackground(new java.awt.Color(228, 228, 228));
-        textLogErrores.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
+        textLogErrores.setFont(new java.awt.Font("Liberation Serif", 1, 20)); // NOI18N
         textLogErrores.setForeground(new java.awt.Color(140, 1, 25));
         textLogErrores.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 textLogErroresKeyReleased(evt);
             }
         });
-        scrollAreaEdicion1.setViewportView(textLogErrores);
+        scrollErroresLog.setViewportView(textLogErrores);
 
-        jPanel2.add(scrollAreaEdicion1);
-        scrollAreaEdicion1.setBounds(10, 160, 650, 380);
+        jPanel2.add(scrollErroresLog);
+        scrollErroresLog.setBounds(10, 160, 650, 380);
 
-        lblAnalisis1.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
-        lblAnalisis1.setForeground(new java.awt.Color(83, 31, 11));
-        lblAnalisis1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAnalisis1.setText("Errores Encontrados:");
-        jPanel2.add(lblAnalisis1);
-        lblAnalisis1.setBounds(10, 120, 650, 37);
+        lblMostrarError.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        lblMostrarError.setForeground(new java.awt.Color(83, 31, 11));
+        lblMostrarError.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMostrarError.setText("Errores Encontrados:");
+        jPanel2.add(lblMostrarError);
+        lblMostrarError.setBounds(10, 120, 650, 37);
 
         btnGuardarArchivo.setBackground(new java.awt.Color(19, 115, 146));
         btnGuardarArchivo.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
@@ -500,9 +532,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
         btnAnalisis.setBounds(30, 60, 203, 50);
 
         txtBusquedas.setBackground(new java.awt.Color(228, 228, 228));
-        txtBusquedas.setFont(new java.awt.Font("Liberation Sans", 0, 24)); // NOI18N
+        txtBusquedas.setFont(new java.awt.Font("Liberation Serif", 0, 24)); // NOI18N
         txtBusquedas.setForeground(new java.awt.Color(63, 58, 58));
-        txtBusquedas.setText("jTextField1");
         jPanel2.add(txtBusquedas);
         txtBusquedas.setBounds(30, 60, 370, 50);
 
@@ -512,6 +543,19 @@ public class MenuPrincipal extends javax.swing.JFrame {
         lblAnalisis.setText("Analizar Manualmente:");
         jPanel2.add(lblAnalisis);
         lblAnalisis.setBounds(10, 10, 650, 37);
+
+        txtLogBusquedas.setBackground(new java.awt.Color(228, 228, 228));
+        txtLogBusquedas.setFont(new java.awt.Font("Liberation Serif", 1, 20)); // NOI18N
+        txtLogBusquedas.setForeground(new java.awt.Color(140, 1, 25));
+        txtLogBusquedas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtLogBusquedasKeyReleased(evt);
+            }
+        });
+        scrollBusquedas.setViewportView(txtLogBusquedas);
+
+        jPanel2.add(scrollBusquedas);
+        scrollBusquedas.setBounds(10, 160, 650, 380);
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
@@ -703,14 +747,51 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void btnGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivoActionPerformed
         //EJECUTA LAS ACCIONES RESPECTIVAS PARA PODER GUARDAR UN ARCHIVO
 
-        if (this.textEdicionArchivo.getText().trim().isBlank()) {
-            JOptionPane.showMessageDialog(this, "No puedes guardar un archivo en blanco\nEscribe algo para poder guardarlo", "No tienes contenido definido", JOptionPane.INFORMATION_MESSAGE);
+        if (this.gestionVentanas == 0) {
+            if (this.textEdicionArchivo.getText().trim().isBlank()) {
+                JOptionPane.showMessageDialog(this, "No puedes guardar un archivo en blanco\nEscribe algo para poder guardarlo", "No tienes contenido definido", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
             return;
+        }
+
+        if (this.gestionVentanas == 1) {
+
+            if (this.txtBusquedas.getText().trim().isBlank()) {
+                JOptionPane.showMessageDialog(this, "No hay ninguna palabra escrita\nEscribe alguna palabra para poder buscarlo", "Texto de busqueda Vacio", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            AnalizadorLexico lexer = this.leerEntradas.getLexerActual();
+
+            if (lexer == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto procesado\nPrimero escriba patrones para poder buscarlos", "Texto de busqueda Vacio", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            
+            try {
+                lexer.busquedaPatrones(this.txtLogBusquedas, this.txtBusquedas.getText());
+                
+            } catch (BadLocationException ex) {
+                JOptionPane.showMessageDialog(this, "No se ha podido imprimir el texto de busqueda", "Error de pintado", JOptionPane.INFORMATION_MESSAGE);
+                
+            } catch (ErrorEncontradoException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Texto de busqueda Vacio", JOptionPane.INFORMATION_MESSAGE);
+                
+            } catch (ErrorPuntualException ex1) {
+                JOptionPane.showMessageDialog(this, ex1.getMessage(), "Patron no Encontrado", JOptionPane.INFORMATION_MESSAGE);
+            }
+
         }
 
         //PENDIENTE LOGICA DE GUARDADO
 
     }//GEN-LAST:event_btnGuardarArchivoActionPerformed
+
+    private void txtLogBusquedasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLogBusquedasKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtLogBusquedasKeyReleased
 
     /**
      * @param args the command line arguments
@@ -732,19 +813,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel labelOperaciones1;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblAnalisis;
-    private javax.swing.JLabel lblAnalisis1;
     private javax.swing.JLabel lblEleccion;
     private javax.swing.JLabel lblEleccionesDadas;
     private javax.swing.JLabel lblHome;
+    private javax.swing.JLabel lblMostrarError;
     private javax.swing.JLabel lblPerfil;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JPanel panelBarraPrincipal;
     private javax.swing.JPanel panelPrincipal;
     private javax.swing.JScrollPane scrollAreaEdicion;
-    private javax.swing.JScrollPane scrollAreaEdicion1;
+    private javax.swing.JScrollPane scrollBusquedas;
+    private javax.swing.JScrollPane scrollErroresLog;
     private javax.swing.JTextPane textEdicionArchivo;
     private javax.swing.JTextPane textLogErrores;
     private javax.swing.JTextArea txtAreaDirectorioArchivo;
     private javax.swing.JTextField txtBusquedas;
+    private javax.swing.JTextPane txtLogBusquedas;
     // End of variables declaration//GEN-END:variables
 }

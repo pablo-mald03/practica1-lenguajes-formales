@@ -6,6 +6,8 @@ package com.pablocompany.practicano1lfp.backDefrontend;
 
 import com.pablocompany.practicano1lfp.backend.ConfigDatos;
 import com.pablocompany.practicano1lfp.backend.ConfigException;
+import com.pablocompany.practicano1lfp.backend.ErrorEncontradoException;
+import com.pablocompany.practicano1lfp.backend.ErrorPuntualException;
 import com.pablocompany.practicano1lfp.backend.Lexema;
 import com.pablocompany.practicano1lfp.backend.Nodo;
 import com.pablocompany.practicano1lfp.backend.Sentencia;
@@ -14,7 +16,9 @@ import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Element;
+import javax.swing.text.Highlighter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -38,8 +42,8 @@ public class AnalizadorLexico {
     private JTextPane areaAnalisis;
 
     private NavegarEstados analizarEstados;
-    
-    private JTextPane logErrores; 
+
+    private JTextPane logErrores;
 
     //Se conserva una lista para poder dar el paso al analisis de datos (SOLO ES PROVISIONAL)
     private ArrayList<String> listaEntrada = new ArrayList<>(6000);
@@ -50,7 +54,7 @@ public class AnalizadorLexico {
         this.listaEntrada = listaExtraida;
 
         this.constantesConfig = configuracion;
-        
+
         this.logErrores = paneErrores;
 
         this.analizarEstados = new NavegarEstados(this.constantesConfig, paneErrores);
@@ -178,7 +182,7 @@ public class AnalizadorLexico {
 
         }
 
-        pintarLogSalida();
+        pintarLogSalida(this.areaAnalisis,true);
 
     }
 
@@ -292,14 +296,14 @@ public class AnalizadorLexico {
 
     //============================FIN DE LA REGION QUE PERMITE EL ANALISIS DE CADA LEXEMA CON SUS RESPECTIVOS NODOS===========================
     //METODO UNICO QUE SIRVE PARA COLOREAR LOS LOG DE SALIDA
-    public void pintarLogSalida() throws BadLocationException {
+    public void pintarLogSalida(JTextPane paneAnalisis, boolean enAnalisis) throws BadLocationException {
 
-        int caret = areaAnalisis.getCaretPosition();
-        int lineaCaret = areaAnalisis.getDocument().getDefaultRootElement().getElementIndex(caret);
-        int columnaCaret = caret - areaAnalisis.getDocument().getDefaultRootElement().getElement(lineaCaret).getStartOffset();
+        int caret = paneAnalisis.getCaretPosition();
+        int lineaCaret = paneAnalisis.getDocument().getDefaultRootElement().getElementIndex(caret);
+        int columnaCaret = caret - paneAnalisis.getDocument().getDefaultRootElement().getElement(lineaCaret).getStartOffset();
 
         //int posicionCaret = this.areaAnalisis.getCaretPosition();
-        limpiarAreaAnalisis();
+        limpiarAreaAnalisis(paneAnalisis);
 
         for (int i = 0; i < this.listaSentencias.size(); i++) {
 
@@ -315,36 +319,42 @@ public class AnalizadorLexico {
 
                     Color colorTexto = obtenerColorPorToken(nodo.getToken());
 
-                    insertarToken(String.valueOf(nodo.getCaracter()), colorTexto);
+                    insertarToken(String.valueOf(nodo.getCaracter()), colorTexto, paneAnalisis);
 
                 }
-                insertarToken(" ", Color.BLACK);
+                insertarToken(" ", Color.BLACK, paneAnalisis);
             }
 
-            insertarToken("\n", Color.BLACK);
+            insertarToken("\n", Color.BLACK, paneAnalisis);
 
         }
 
         try {
 
-            Element root = areaAnalisis.getDocument().getDefaultRootElement();
+            Element root = paneAnalisis.getDocument().getDefaultRootElement();
             if (lineaCaret < root.getElementCount()) {
 
                 int nuevaPos = root.getElement(lineaCaret).getStartOffset() + Math.min(columnaCaret, root.getElement(lineaCaret).getEndOffset() - root.getElement(lineaCaret).getStartOffset() - 1);
-                areaAnalisis.setCaretPosition(nuevaPos);
+                paneAnalisis.setCaretPosition(nuevaPos);
             }
 
         } catch (Exception e) {
-            this.areaAnalisis.setCaretPosition(0);
+            paneAnalisis.setCaretPosition(0);
         }
 
-        mostrarErrores();
+        mostrarErrores(enAnalisis);
 
     }
 
     //Metodo encargado de imprimir los errores en el log de errores
-    private void mostrarErrores() { 
+    //True refresca todo el log con el lexer
+    //False no hace nada porque esta en busquedas
+    private void mostrarErrores(boolean enAnalisis) {
         
+        if(!enAnalisis){
+            return;
+        }
+
         for (int i = 0; i < this.listaSentencias.size(); i++) {
 
             Sentencia sentenciaActiva = this.listaSentencias.get(i);
@@ -395,16 +405,16 @@ public class AnalizadorLexico {
     }
 
     //Metodo que trabaja en conjunto para poder ir pintando letra a letra
-    private void limpiarAreaAnalisis() throws BadLocationException {
-        StyledDocument doc = this.areaAnalisis.getStyledDocument();
+    private void limpiarAreaAnalisis(JTextPane paneAnalisis) throws BadLocationException {
+        StyledDocument doc = paneAnalisis.getStyledDocument();
         doc.remove(0, doc.getLength());
 
     }
 
     // Método para insertar texto con un color específico
-    private void insertarToken(String texto, Color color) throws BadLocationException {
+    private void insertarToken(String texto, Color color, JTextPane paneAnalisis) throws BadLocationException {
 
-        StyledDocument doc = this.areaAnalisis.getStyledDocument();
+        StyledDocument doc = paneAnalisis.getStyledDocument();
         // Crear estilo temporal
         SimpleAttributeSet estilo = new SimpleAttributeSet();
         StyleConstants.setForeground(estilo, color);
@@ -413,4 +423,90 @@ public class AnalizadorLexico {
 
     }
 
+    //===========================APARTADO PARA GESTIONAR LAS BUSQUEDAS EN EL TEXTO========================================
+    public void busquedaPatrones(JTextPane paneBusqueda, String palabraBuscada) throws BadLocationException, ErrorEncontradoException, ErrorPuntualException {
+
+        pintarLogSalida(paneBusqueda,false);
+
+        if (this.listaSentencias.isEmpty()) {
+            throw new ErrorEncontradoException("El texto esta vacio");
+        }
+
+        Highlighter highlighter = paneBusqueda.getHighlighter();
+        highlighter.removeAllHighlights();
+
+        //Variable importante para saber si minimo hay una coincidencia
+        boolean hayCoincidencia = false; 
+        
+        boolean yaEncontrado = false;
+        for (int i = 0; i < this.listaSentencias.size(); i++) {
+            Sentencia sentenciaBuscada = this.listaSentencias.get(i);
+
+            for (int j = 0; j < sentenciaBuscada.limiteLexemas(); j++) {
+
+                Lexema lexemaActual = sentenciaBuscada.getListaLexema(j);
+
+                if (lexemaActual.getLexema().equals(palabraBuscada)) {
+                    yaEncontrado = true;
+                    hayCoincidencia = true;
+
+                    int fila = lexemaActual.getFilaCoordenada() - 1;
+
+                    if (fila < 0) {
+                        fila = 0;
+                    }
+
+                    int columnaInicio = lexemaActual.getValorNodo(0).getColumna() - 1;
+                    if (columnaInicio < 0) {
+                        columnaInicio = 0;
+                    }
+                    int columnaFin = lexemaActual.getValorNodo(lexemaActual.getLongitudNodo() - 1).getColumna();
+                    if (columnaFin < 0) {
+                        columnaFin = 0;
+                    }
+
+                    resaltar(paneBusqueda, fila, columnaInicio, columnaFin);
+                }
+
+            }
+
+        }
+        
+        if(yaEncontrado){
+            System.out.println("Ya no sigue");
+            return;
+        }
+        
+        
+        
+        
+        
+        if(!hayCoincidencia){
+             throw new ErrorPuntualException("No existen patrones relacionados");
+        }
+        
+        
+
+    }
+
+    //Metodo que se encarga de resaltar la palabra que se busca
+    public void resaltar(JTextPane textPane, int linea, int startColumna, int endColumna) throws BadLocationException {
+        Highlighter highlighter = textPane.getHighlighter();
+        Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
+
+        int startOffset = getLineaInicioFin(textPane, linea, startColumna);
+        int endOffset = getLineaInicioFin(textPane, linea, endColumna);
+
+        highlighter.addHighlight(startOffset, endOffset, painter);
+    }
+
+    //Metodo que permite ubicar la coordenada para resaltar
+    private int getLineaInicioFin(JTextPane textPane, int linea, int columna) throws BadLocationException {
+        Element root = textPane.getDocument().getDefaultRootElement();
+        Element lineElem = root.getElement(linea); // obtiene la línea
+        int start = lineElem.getStartOffset();
+        return start + columna;
+    }
+
+    //===========================FIN DEL APARTADO PARA GESTIONAR LAS BUSQUEDAS EN EL TEXTO========================================
 }
