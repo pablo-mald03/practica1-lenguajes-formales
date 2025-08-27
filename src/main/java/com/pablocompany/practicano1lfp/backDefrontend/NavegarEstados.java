@@ -150,18 +150,16 @@ public class NavegarEstados {
 
         switch (tokenDeclarado) {
 
-            case PALABRA_RESERVADA:
-
-                break;
-
             case IDENTIFICADOR:
                 estadoIdentificador(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
 
             case NUMERO:
+                estadoNumerico(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
 
             case DECIMAL:
+                estadoDecimal(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
 
             case CADENA:
@@ -227,7 +225,6 @@ public class NavegarEstados {
             nodoTemporal1.setComodin(true);
             throw new ErrorPuntualException(lexemaParametro.getLexema() + " <- Error, No tiene comillas de apertura. NO TOKEN");
         }
-        
 
         //Declara el estado de analisis como identificador
         if (esLetra(nodoCaracterInicio)) {
@@ -266,14 +263,86 @@ public class NavegarEstados {
 
     //Metodo que analiza los estados numericos
     //Este estado se puede comunicar con el estado decimal
-    public void estadoNumerico(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) {
+    public void estadoNumerico(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
 
         char caracterNodo = nodoActual.getCaracter();
 
-        if (indice > 1) {
-            // throw new ErrorEncontradoException(mensaje);
+        //Se comunica con el estado decimal para poder evaluar que sea decimal
+        if (caracterNodo == '.') {
+            lexemaUtilizado.setEstadoAnalisis(Token.DECIMAL);
+
+            //DECLARA EL VALOR COMO DECIMAL HACIA ATRAS SIEMRE Y CUANDO NO SEA ERROR
+            for (int i = indice; i >= 0; i--) {
+                Nodo nodoComparacion = lexemaUtilizado.getValorNodo(i);
+
+                if (nodoComparacion.getToken() != Token.ERROR) {
+                    nodoComparacion.setTipo(Token.DECIMAL);
+                }
+
+            }
+
+            estadoDecimal(nodoActual, lexemaUtilizado, indice, palabraEvaluada);
+            return;
         }
 
+        if (esLetra(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Letras no permitidas en " + palabraEvaluada);
+        }
+
+        if (this.constantesConfig.esAgrupacion(caracterNodo) || this.constantesConfig.esOperadores(caracterNodo) || this.constantesConfig.esPuntuacion(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Caracter especial no permitido en " + palabraEvaluada);
+        }
+
+        if (!esDigito(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Caracter no admitido " + palabraEvaluada);
+        }
+
+        nodoActual.setTipo(Token.NUMERO);
+
+    }
+
+    public void estadoDecimal(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
+
+        char caracterNodo = nodoActual.getCaracter();
+        
+        int contadorPuntos = 0;
+
+        //Se condiciona a que lexicamente no existen decimales con doble punto decimal
+        for (int i = 0; i <lexemaUtilizado.getLongitudNodo(); i++) {
+            Nodo nodoComparacion = lexemaUtilizado.getValorNodo(i);
+
+            if (nodoComparacion.getToken() != Token.ERROR && nodoComparacion.getCaracter() == '.') {
+                contadorPuntos++;
+            }
+
+        }
+
+        if (contadorPuntos > 1) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", No se puede poner doble punto decimal en " + palabraEvaluada);
+        }
+        
+        if (esLetra(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Letras no permitidas en " + palabraEvaluada);
+        }
+        
+        if (!esDigito(caracterNodo) && caracterNodo != '.') {
+
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Caracter no admitido " + palabraEvaluada);
+        }
+
+        if ((indice == lexemaUtilizado.getLongitudNodo() - 1) && lexemaUtilizado.getValorNodo(indice).getCaracter() == '.') {
+
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Sin digitos despues del punto en " + palabraEvaluada);
+        }
+
+        nodoActual.setTipo(Token.DECIMAL);
     }
 
     //Metodo que permite analizar el estado de cadenas de texto
