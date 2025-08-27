@@ -343,10 +343,7 @@ public class AnalizadorLexico {
     }
 
     //Metodo encargado de imprimir los errores en el log de errores
-    private void mostrarErrores() {
-
-        ArrayList<String> listaErrores = new ArrayList<>(5000);
-        
+    private void mostrarErrores() { 
         
         for (int i = 0; i < this.listaSentencias.size(); i++) {
 

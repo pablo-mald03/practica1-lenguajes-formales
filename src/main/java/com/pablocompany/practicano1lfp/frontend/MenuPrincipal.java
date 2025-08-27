@@ -65,6 +65,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         this.gestionVentanas = 0;
         this.yaCargado = false;
+        this.txtBusquedas.setVisible(false);
 
         //Se instancia la clase para poder operar con archivos de texto
         this.manipuladorDirectorios = new ManejadorArchivos();
@@ -227,11 +228,14 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelOperaciones1 = new javax.swing.JLabel();
         scrollAreaEdicion = new javax.swing.JScrollPane();
         textEdicionArchivo = new javax.swing.JTextPane();
-        lblAnalisis = new javax.swing.JLabel();
-        btnAnalisis = new javax.swing.JButton();
-        lblAnalisis1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         scrollAreaEdicion1 = new javax.swing.JScrollPane();
         textLogErrores = new javax.swing.JTextPane();
+        lblAnalisis1 = new javax.swing.JLabel();
+        btnGuardarArchivo = new javax.swing.JButton();
+        btnAnalisis = new javax.swing.JButton();
+        txtBusquedas = new javax.swing.JTextField();
+        lblAnalisis = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setResizable(false);
@@ -417,7 +421,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                         .addComponent(btnSubirArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnQuitarArchivo, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,24 +453,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         scrollAreaEdicion.setViewportView(textEdicionArchivo);
 
-        lblAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
-        lblAnalisis.setForeground(new java.awt.Color(83, 31, 11));
-        lblAnalisis.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAnalisis.setText("Analizar Manualmente:");
-
-        btnAnalisis.setBackground(new java.awt.Color(46, 136, 80));
-        btnAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
-        btnAnalisis.setText("Analizar Texto");
-        btnAnalisis.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnalisisActionPerformed(evt);
-            }
-        });
-
-        lblAnalisis1.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
-        lblAnalisis1.setForeground(new java.awt.Color(83, 31, 11));
-        lblAnalisis1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAnalisis1.setText("Errores Encontrados:");
+        jPanel2.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(50, 56, 68)));
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(null);
 
         textLogErrores.setBackground(new java.awt.Color(228, 228, 228));
         textLogErrores.setFont(new java.awt.Font("Liberation Serif", 0, 20)); // NOI18N
@@ -478,32 +467,62 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
         scrollAreaEdicion1.setViewportView(textLogErrores);
 
+        jPanel2.add(scrollAreaEdicion1);
+        scrollAreaEdicion1.setBounds(10, 160, 650, 380);
+
+        lblAnalisis1.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        lblAnalisis1.setForeground(new java.awt.Color(83, 31, 11));
+        lblAnalisis1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAnalisis1.setText("Errores Encontrados:");
+        jPanel2.add(lblAnalisis1);
+        lblAnalisis1.setBounds(10, 120, 650, 37);
+
+        btnGuardarArchivo.setBackground(new java.awt.Color(19, 115, 146));
+        btnGuardarArchivo.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnGuardarArchivo.setText("Guardar Texto");
+        btnGuardarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarArchivoActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnGuardarArchivo);
+        btnGuardarArchivo.setBounds(420, 60, 203, 50);
+
+        btnAnalisis.setBackground(new java.awt.Color(46, 136, 80));
+        btnAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 24)); // NOI18N
+        btnAnalisis.setText("Analizar Texto");
+        btnAnalisis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnalisisActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnAnalisis);
+        btnAnalisis.setBounds(30, 60, 203, 50);
+
+        txtBusquedas.setBackground(new java.awt.Color(228, 228, 228));
+        txtBusquedas.setFont(new java.awt.Font("Liberation Sans", 0, 24)); // NOI18N
+        txtBusquedas.setForeground(new java.awt.Color(63, 58, 58));
+        txtBusquedas.setText("jTextField1");
+        jPanel2.add(txtBusquedas);
+        txtBusquedas.setBounds(30, 60, 370, 50);
+
+        lblAnalisis.setFont(new java.awt.Font("Liberation Sans", 1, 32)); // NOI18N
+        lblAnalisis.setForeground(new java.awt.Color(83, 31, 11));
+        lblAnalisis.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAnalisis.setText("Analizar Manualmente:");
+        jPanel2.add(lblAnalisis);
+        lblAnalisis.setBounds(10, 10, 650, 37);
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(panelBarraPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(8, 8, 8)
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(panelPrincipalLayout.createSequentialGroup()
-                                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(lblAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                                        .addGap(235, 235, 235)
-                                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
-                                        .addComponent(lblAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 6, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrincipalLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(scrollAreaEdicion1)))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -521,14 +540,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(lblAnalisis)
-                        .addGap(12, 12, 12)
-                        .addComponent(btnAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblAnalisis1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(scrollAreaEdicion1, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 556, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addComponent(labelOperaciones1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -583,8 +596,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
                 this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
 
-                //PENDIENTE REMOVER
-                //this.leerEntradas.imprimirLog(listaObtenida, this.textEdicionArchivo);
+                this.btnGuardarArchivo.setEnabled(false);
 
                 this.leerEntradas.setLista(listaObtenida, this.textEdicionArchivo);
 
@@ -598,7 +610,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         } catch (BadLocationException | AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         } catch (ConfigException ex) {
-           JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
         }
 
 
@@ -623,6 +635,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     this.manipuladorDirectorios.reiniciarPath();
                     this.textEdicionArchivo.setText("");
                     this.yaCargado = false;
+                    this.btnGuardarArchivo.setEnabled(true);
 
                 } catch (AnalizadorLexicoException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Guardado", JOptionPane.ERROR_MESSAGE);
@@ -644,38 +657,60 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 || code == KeyEvent.VK_TAB || code == KeyEvent.VK_CAPS_LOCK) {
             return; // ignorar estas teclas
         }
-        
-        if(this.textEdicionArchivo.getText().isBlank()){
+
+        if (this.textEdicionArchivo.getText().isBlank()) {
             return;
         }
 
         try {
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
-            this.leerEntradas.analizarEntradas(this.textEdicionArchivo,this.textLogErrores);
+            this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
 
         } catch (AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         } catch (ConfigException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
         } catch (BadLocationException ex) {
-             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
     private void btnAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalisisActionPerformed
-        //Testing para mientras
-        ConfigDatos configurar = new ConfigDatos();
+        //Boton manual que permite analizar el texto
+        if (this.textEdicionArchivo.getText().isBlank()) {
+            return;
+        }
+
         try {
-            configurar.cargarDesdeJson();
+            //Detecta cada vez que se cambia una palabra
+            this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+            this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
+
+        } catch (AnalizadorLexicoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
         } catch (ConfigException ex) {
-            System.out.println("Error " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
+        } catch (BadLocationException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAnalisisActionPerformed
 
     private void textLogErroresKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textLogErroresKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_textLogErroresKeyReleased
+
+    private void btnGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivoActionPerformed
+        //EJECUTA LAS ACCIONES RESPECTIVAS PARA PODER GUARDAR UN ARCHIVO
+
+        if (this.textEdicionArchivo.getText().trim().isBlank()) {
+            JOptionPane.showMessageDialog(this, "No puedes guardar un archivo en blanco\nEscribe algo para poder guardarlo", "No tienes contenido definido", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        //PENDIENTE LOGICA DE GUARDADO
+
+    }//GEN-LAST:event_btnGuardarArchivoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -687,9 +722,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnBusquedaPatrones;
     private javax.swing.JButton btnConfig;
     private javax.swing.JButton btnGenerarReportes;
+    private javax.swing.JButton btnGuardarArchivo;
     private javax.swing.JButton btnQuitarArchivo;
     private javax.swing.JButton btnSubirArchivo;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel labelDatos;
     private javax.swing.JLabel labelOperaciones1;
@@ -708,5 +745,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextPane textEdicionArchivo;
     private javax.swing.JTextPane textLogErrores;
     private javax.swing.JTextArea txtAreaDirectorioArchivo;
+    private javax.swing.JTextField txtBusquedas;
     // End of variables declaration//GEN-END:variables
 }

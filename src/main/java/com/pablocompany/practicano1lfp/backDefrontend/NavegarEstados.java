@@ -173,6 +173,10 @@ public class NavegarEstados {
             case AGRUPACION:
                 estadoAgrupacion(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
+                
+            case PUNTUACION:
+                estadoPuntuacion(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
+                break;
 
             default:
                 throw new ErrorPuntualException(String.valueOf(nodoActual.getCaracter()));
@@ -249,11 +253,31 @@ public class NavegarEstados {
         //Define el estado como agrupacion
         if (this.constantesConfig.esAgrupacion(nodoCaracterInicio)) {
             lexemaParametro.setEstadoAnalisis(Token.AGRUPACION);
+            return;
+        }
+        
+        //Define el estado como agrupacion
+        if (this.constantesConfig.esPuntuacion(nodoCaracterInicio)) {
+            lexemaParametro.setEstadoAnalisis(Token.PUNTUACION);
         }
 
     }
 
     //===========================APARTADO DE METODOS QUE SIRVEN PARA IR DECLARANDO ESTADOS================================
+    //Metodo que permite comparar si son signos de agrupacion en conjunto
+    public void estadoPuntuacion(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
+
+        char caracterNodo = nodoActual.getCaracter();
+        
+        if (!this.constantesConfig.esPuntuacion(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(" Caracter de Puntuacion no registrado en " + palabraEvaluada);
+        }
+
+        nodoActual.setTipo(Token.PUNTUACION);
+
+    }
+    
     //Metodo que permite comparar si son signos de agrupacion en conjunto
     public void estadoAgrupacion(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
 
