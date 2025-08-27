@@ -10,8 +10,8 @@ package com.pablocompany.practicano1lfp.backend;
  */
 public class ErrorGramaticoException extends Exception{
     
-    public ErrorGramaticoException(){
-        super();
+    public ErrorGramaticoException(String mensaje){
+        super(mensaje);
     }
     
 }

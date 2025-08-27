@@ -4,7 +4,6 @@
  */
 package com.pablocompany.practicano1lfp.backend;
 
-import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import java.util.ArrayList;
 
@@ -26,6 +25,8 @@ public class Lexema {
 
     //AYUDA A DECLARAR EL ESTADO INICIAL AL QUE SERA SOMETIDO EN BASE A LA DETECCION DE PATRON
     private Token estadoAnalisis;
+    
+    private String lexemaError; 
 
     //ATRIBUTO QUE AYUDA A VALIDAR SI YA EL LEXAMA FUE COMPLETAMENTE PROCESADO
     //True si ya
@@ -38,6 +39,7 @@ public class Lexema {
         this.lineaCoordenada = lineaCoordenada;
         this.estadoAnalisis = Token.INDEFINIDO;
         this.yaDeclarado = false;
+        this.lexemaError = "";
     }
 
     //Retorna el lexema por si se necesita 
@@ -49,7 +51,18 @@ public class Lexema {
     public int getLongitudNodo() {
         return this.listaNodos.size();
     }
-
+    
+    //Metodo que sirve para ir agregando las cadenas de error detectadas
+    public void setLexemaError(String lexemaEncontrado){
+        this.lexemaError = lexemaEncontrado;
+    }
+    
+    //Metodo que retorna la cadena que provoco el error
+    public String getCadenaError(){
+        return this.lexemaError;
+    }
+    
+    
     //Metodo que sirve para retornar el estado inicial del lexema
     public Token getEstadoAnalisis() {
         return this.estadoAnalisis;
