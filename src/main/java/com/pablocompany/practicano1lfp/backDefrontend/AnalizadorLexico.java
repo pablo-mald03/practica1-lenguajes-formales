@@ -338,7 +338,7 @@ public class AnalizadorLexico {
             case IDENTIFICADOR:
                 return new Color(0x6B4627);
             case NUMERO:
-                return new Color(0x50CC3B);
+                return new Color(0x1FC23B);
             case DECIMAL:
                 return Color.BLACK;
             case CADENA:
@@ -347,9 +347,11 @@ public class AnalizadorLexico {
             case COMENTARIO_BLOQUE:
                 return new Color(0x1B6615);
             case OPERADOR:
-                return new Color(0xC2D106);
+                return new Color(0xB5AB2D);
             case AGRUPACION:
                 return new Color(0x991CB8);
+            case PUNTUACION:
+                return new Color(0x329481);
             case ERROR:
                 return Color.RED;
             default:

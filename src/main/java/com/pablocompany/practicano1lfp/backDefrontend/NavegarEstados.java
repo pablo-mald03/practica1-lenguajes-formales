@@ -167,9 +167,11 @@ public class NavegarEstados {
                 break;
 
             case OPERADOR:
+                estadoOperador(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
 
             case AGRUPACION:
+                estadoAgrupacion(nodoActual, lexemaInicial, iteracion, cadenaEvaluada);
                 break;
 
             default:
@@ -238,9 +240,47 @@ public class NavegarEstados {
             return;
         }
 
+        //Define el estado como operador
+        if (this.constantesConfig.esOperadores(nodoCaracterInicio)) {
+            lexemaParametro.setEstadoAnalisis(Token.OPERADOR);
+            return;
+        }
+
+        //Define el estado como agrupacion
+        if (this.constantesConfig.esAgrupacion(nodoCaracterInicio)) {
+            lexemaParametro.setEstadoAnalisis(Token.AGRUPACION);
+        }
+
     }
 
     //===========================APARTADO DE METODOS QUE SIRVEN PARA IR DECLARANDO ESTADOS================================
+    //Metodo que permite comparar si son signos de agrupacion en conjunto
+    public void estadoAgrupacion(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
+
+        char caracterNodo = nodoActual.getCaracter();
+        
+        if (!this.constantesConfig.esAgrupacion(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Signo de agrupacion no registrado en " + palabraEvaluada);
+        }
+
+        nodoActual.setTipo(Token.AGRUPACION);
+
+    }
+    //Metodo que permite comparar si son operadores en conjunto
+    public void estadoOperador(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
+
+        char caracterNodo = nodoActual.getCaracter();
+
+        if (!this.constantesConfig.esOperadores(caracterNodo)) {
+            nodoActual.setComodin(true);
+            throw new ErrorGramaticoException(", Operador no registrado en " + palabraEvaluada);
+        }
+
+        nodoActual.setTipo(Token.OPERADOR);
+
+    }
+
     //Metodo que analiza los estados de identificadores
     //Este lanza error si se topa con algo fuera de la gramatica 
     public void estadoIdentificador(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
@@ -307,11 +347,11 @@ public class NavegarEstados {
     public void estadoDecimal(Nodo nodoActual, Lexema lexemaUtilizado, int indice, String palabraEvaluada) throws ErrorGramaticoException {
 
         char caracterNodo = nodoActual.getCaracter();
-        
+
         int contadorPuntos = 0;
 
         //Se condiciona a que lexicamente no existen decimales con doble punto decimal
-        for (int i = 0; i <lexemaUtilizado.getLongitudNodo(); i++) {
+        for (int i = 0; i < lexemaUtilizado.getLongitudNodo(); i++) {
             Nodo nodoComparacion = lexemaUtilizado.getValorNodo(i);
 
             if (nodoComparacion.getToken() != Token.ERROR && nodoComparacion.getCaracter() == '.') {
@@ -324,12 +364,12 @@ public class NavegarEstados {
             nodoActual.setComodin(true);
             throw new ErrorGramaticoException(", No se puede poner doble punto decimal en " + palabraEvaluada);
         }
-        
+
         if (esLetra(caracterNodo)) {
             nodoActual.setComodin(true);
             throw new ErrorGramaticoException(", Letras no permitidas en " + palabraEvaluada);
         }
-        
+
         if (!esDigito(caracterNodo) && caracterNodo != '.') {
 
             nodoActual.setComodin(true);

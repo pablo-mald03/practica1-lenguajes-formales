@@ -109,11 +109,6 @@ public class Lexema {
             this.listaNodos.add(new Nodo(caracter, fila, columnaNodo, Token.INDEFINIDO));
             columnaNodo++;
         }
-
-        /*for (Nodo nodito : listaNodos) {
-
-            System.out.println("Nodo: " + nodito.getCaracter() + " Fila: " + nodito.getLinea() + " Columna: " + nodito.getColumna() + " Tipo: " + nodito.getToken().getTipo());
-        }*/
         return columnaNodo;
 
     }
