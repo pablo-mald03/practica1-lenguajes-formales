@@ -26,11 +26,11 @@ public class MostrarReportes extends javax.swing.JDialog {
     //Gestiona el reporte de errores
     private ModificarTabla mdTablitaErrores;
     private CrearTableros crearTableroErrores;
-    
+
     //Gestiona el reporte de conteo lexemas
     private ModificarTabla mdTablitaConteo;
     private CrearTableros crearTableroConteo;
-    
+
     //Gestiona el reporte de tokenizacion de lexemas
     private ModificarTabla mdTablitaTokenizacion;
     private CrearTableros crearTableroTokenizacion;
@@ -54,12 +54,14 @@ public class MostrarReportes extends javax.swing.JDialog {
 
         this.mdTablitaErrores = new ModificarTabla(this.tableroMuestraErrores);
         this.crearTableroErrores = new CrearTableros(this.tableroMuestraErrores);
-        
+
         this.mdTablitaConteo = new ModificarTabla(this.tableroConteoLexermas);
         this.crearTableroConteo = new CrearTableros(this.tableroConteoLexermas);
-        
+
         this.mdTablitaTokenizacion = new ModificarTabla(this.tableroConteoTokens);
         this.crearTableroTokenizacion = new CrearTableros(this.tableroConteoTokens);
+
+        this.gestionLecturas.getGenerarReportes().reiniciarListas();
 
     }
 
@@ -556,7 +558,7 @@ public class MostrarReportes extends javax.swing.JDialog {
 
     private void btnReporteGeneralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteGeneralActionPerformed
         //Muestra el reporte de calificacion
-          try {
+        try {
 
             if (this.gestionLecturas == null) {
                 JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
@@ -587,12 +589,37 @@ public class MostrarReportes extends javax.swing.JDialog {
     }//GEN-LAST:event_tableroConteoLexermasMousePressed
 
     private void btnExportarConteoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarConteoActionPerformed
-        // TODO add your handling code here:
+        //Exporta el reporte de conteo de lexemas
+        try {
+            if (this.gestionLecturas == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (this.gestionLecturas.getGenerarReportes() == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                //Boton manual que permite exporter el reporte de lexemas
+
+                this.gestionLecturas.getGenerarReportes().generarReporteSinErroresLexemas();
+
+                JOptionPane.showMessageDialog(this, "Reporte de Lexemas generado Correctamente\nCarpeta: /Reportes", "Reporte de Lexemas Generado", JOptionPane.INFORMATION_MESSAGE);
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Exportacion", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+
+        }
     }//GEN-LAST:event_btnExportarConteoActionPerformed
 
     private void btnReporteConteoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteConteoActionPerformed
         //Muestra el reporte en la tabla de conteo de lexemas
-         try {
+        try {
 
             if (this.gestionLecturas == null) {
                 JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
@@ -606,7 +633,7 @@ public class MostrarReportes extends javax.swing.JDialog {
 
             try {
                 //Boton manual que permite generar el reporte de conteo de lexemas
-                this.gestionLecturas.getGenerarReportes().generarReporteConteoLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaErrores, this.crearTableroErrores);
+                this.gestionLecturas.getGenerarReportes().generarReporteConteoLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaConteo, this.crearTableroConteo);
 
             } catch (ErrorPuntualException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Inconveniente encontrado", JOptionPane.ERROR_MESSAGE);
@@ -624,7 +651,7 @@ public class MostrarReportes extends javax.swing.JDialog {
 
     private void btnReportarTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportarTokenActionPerformed
         //Muestra el reporte en la tabla de tokenizacion de lexemas
-         try {
+        try {
 
             if (this.gestionLecturas == null) {
                 JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);

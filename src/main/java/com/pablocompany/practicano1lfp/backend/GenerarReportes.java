@@ -41,6 +41,9 @@ public class GenerarReportes {
     //Lista de errores 
     private ArrayList<String> listaErrores = new ArrayList<>(5000);
 
+    //Listado de lexemas
+    private ArrayList<String> listadoLexemas = new ArrayList<>(900);
+
     //------------------FIN DEL APARTADO DE MANEJO DE ATRIBUTOS DEL REPORTE--------------
     public GenerarReportes() {
 
@@ -67,11 +70,11 @@ public class GenerarReportes {
         this.pathDefinitivo = PATH_PREDETERMINADO;
 
     }
-    
-    
-    //Metodo util para poder mostrar las tokenizaciones de lexemas tokens normales
-    public void generarReporteTokenizacionLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
 
+    //Metodo util para poder mostrar las tokenizaciones de lexemas tokens normales
+    public void generarReporteConteoLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
+
+        this.hayErrores = false;
         //Cuenta los errores para ver si hay 
         for (Sentencia sentencia : sentenciasListado) {
 
@@ -97,46 +100,76 @@ public class GenerarReportes {
 
         crearTablero.vaciarTablero();
 
+        if (!this.listadoLexemas.isEmpty()) {
+            this.listadoLexemas.clear();
+        }
+
         for (Sentencia sentencia : sentenciasListado) {
 
             for (int i = 0; i < sentencia.limiteLexemas(); i++) {
 
-                /* Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
 
-                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+                if (!lexemaEvaluado.getLexema().isBlank()) {
 
-                    this.listaErrores.add(lexemaEvaluado.getCadenaError());
+                    this.listadoLexemas.add(lexemaEvaluado.getEstadoAnalisis().getTipo());
+                    this.listadoLexemas.add(lexemaEvaluado.getLexema());
 
-                    String coordenada = "(";
-                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " - ";
+                    String coordenada = "\"F(";
 
-                    int columnaTope = 0;
+                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + ") , C( ";
 
-                    for (Nodo nodoRecorrido : lexemaEvaluado.obtenerListaNodo()) {
+                    coordenada += String.valueOf(lexemaEvaluado.getValorNodo(0).getColumna()) + "-" + String.valueOf(lexemaEvaluado.getValorNodo(lexemaEvaluado.getLongitudNodo() - 1).getColumna()) + " )\"";
 
-                        if (nodoRecorrido.getToken() != Token.ERROR) {
-                            break;
-                        }
-
-                        columnaTope = nodoRecorrido.getColumna();
-
-                    }
-
-                    coordenada += String.valueOf(columnaTope) + ")";
-
-                    this.listaErrores.add(coordenada);
+                    this.listadoLexemas.add(coordenada);
 
                 }
-                 */
+
             }
 
         }
 
+        if (this.listadoLexemas.isEmpty()) {
+            throw new ErrorPuntualException("No se ha encontrado ningun lexema ");
+        }
+        
+        String[] titulos = {"Nombre Token", "Lexema","Posicion"};
+        crearTablero.tableroConTitulo(titulos, this.listadoLexemas.size() / 3, 3, true);
+        modificarTabla.reendereizarTablero();
+
+        int iterador = 0;
+
+        for (int i = 0; i < this.listadoLexemas.size(); i += 3) {
+
+            String simbolo = this.listadoLexemas.get(i);
+            String lexema = this.listadoLexemas.get(i + 1);
+            String posicion = this.listadoLexemas.get(i + 2);
+
+            modificarTabla.colocarTextos(iterador, 0, simbolo);
+            modificarTabla.colocarTextos(iterador, 1, lexema);
+            modificarTabla.colocarTextos(iterador, 2, posicion);
+            iterador++;
+        }
+        
+        
+
+    }
+
+    //Metodo util para reiniciar todas las listas al entrar
+    public void reiniciarListas() {
+        if (!this.listadoLexemas.isEmpty()) {
+            this.listadoLexemas.clear();
+        }
+
+        if (!this.listaErrores.isEmpty()) {
+            this.listaErrores.clear();
+        }
     }
 
     //Metodo util para poder mostrar los conteos de lexemas tokens normales
-    public void generarReporteConteoLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
+    public void generarReporteTokenizacionLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
 
+        this.hayErrores = false;
         //Cuenta los errores para ver si hay 
         for (Sentencia sentencia : sentenciasListado) {
 
@@ -332,8 +365,8 @@ public class GenerarReportes {
 
                     this.listaErrores.add(lexemaEvaluado.getCadenaError());
 
-                    String coordenada = "(";
-                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " - ";
+                    String coordenada = "\"(";
+                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " , ";
 
                     int columnaTope = 0;
 
@@ -347,7 +380,7 @@ public class GenerarReportes {
 
                     }
 
-                    coordenada += String.valueOf(columnaTope) + ")";
+                    coordenada += String.valueOf(columnaTope) + ")\"";
 
                     this.listaErrores.add(coordenada);
 
@@ -384,15 +417,20 @@ public class GenerarReportes {
         reportarErroresCSV(this.listaErrores, "ReporteErrores", "Cadena_Error,Posicion");
     }
 
+    //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
+    public void generarReporteSinErroresLexemas() throws ErrorPuntualException {
+        reportarSinErroresCSV(this.listadoLexemas, "ReporteLexemas", "Nombre_Token,Lexema,Posicion", "Lexemas");
+    }
+
     //Metodo que permite exportar .csv de los errores
     public void reportarErroresCSV(ArrayList<String> lista, String nombreArchivo, String headersArchivo) throws ErrorPuntualException {
 
-        if (!this.hayErrores) {
-            throw new ErrorPuntualException("No hay ningun error registrado en el analisis");
-        }
-
         if (this.listaErrores.isEmpty()) {
             throw new ErrorPuntualException("No hay reporte de errores cargado aun\nGenere primero el reporte para poder exportarlo");
+        }
+
+        if (!this.hayErrores) {
+            throw new ErrorPuntualException("No hay ningun error registrado en el analisis");
         }
 
         if (!directorioExiste()) {
@@ -414,6 +452,45 @@ public class GenerarReportes {
                 writer.append(campo1).append(",")
                         .append(campo2).append(",")
                         .append("\n");
+
+            }
+
+        } catch (IOException e) {
+            throw new ErrorPuntualException("No se ha podido exportar el reporte" + e.getMessage());
+        }
+    }
+
+    //Metodo que permite exportar .csv de los errores
+    public void reportarSinErroresCSV(ArrayList<String> lista, String nombreArchivo, String headersArchivo, String nombramiento) throws ErrorPuntualException {
+
+        if (this.listadoLexemas.isEmpty()) {
+            throw new ErrorPuntualException("No hay reporte de " + nombramiento + " cargado aun\nGenere primero el reporte para poder exportarlo");
+        }
+
+        if (this.hayErrores) {
+            throw new ErrorPuntualException("Hay errores registrados en el analisis\nNo puedes exportar el reporte");
+        }
+
+        if (!directorioExiste()) {
+            setPathPredeterminado();
+        }
+
+        //Se genera la hora de exportacion para evitar duplicados
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String fechaHora = ahora.format(formatter);
+
+        try (FileWriter writer = new FileWriter(this.pathDefinitivo + nombreArchivo + "_" + fechaHora + ".csv")) {
+            writer.append(headersArchivo + "\n");
+
+            for (int i = 0; i < lista.size(); i += 3) {
+                String campo1 = lista.get(i);
+                String campo2 = lista.get(i + 1);
+                String campo3 = lista.get(i + 2);
+
+                writer.append(campo1).append(",")
+                        .append(campo2).append(",")
+                        .append(campo3).append("\n");
 
             }
 
