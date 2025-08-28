@@ -103,5 +103,10 @@ public class LectorEntradas {
     public AnalizadorLexico getLexerActual(){
         return this.lexerActual.getLexer();
     }
+    
+    //Metodo que retorna la referencia de config
+    public ConfigDatos getDatosConfig(){
+        return this.constantesConfig;
+    }
 
 }

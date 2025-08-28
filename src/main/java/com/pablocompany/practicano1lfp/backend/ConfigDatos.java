@@ -4,11 +4,21 @@
  */
 package com.pablocompany.practicano1lfp.backend;
 
+import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
+import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
+import javax.swing.JTextPane;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -23,6 +33,9 @@ public class ConfigDatos {
     private ArrayList<String> agrupacion = new ArrayList<>();
 
     private Comentarios comments;
+
+    //Lista temporal que permite mostrar en pantalla el config
+    private ArrayList<String> listaTemporal = new ArrayList<>(5000);
 
     public ConfigDatos() {
         this.comments = new Comentarios();
@@ -187,4 +200,218 @@ public class ConfigDatos {
 
     }
 
+    //=====================APARTADO DE METODOS QUE SIRVEN PARA PODER MOSTRAR EN LA UI LA CONFIGURACION========================
+    //Metodo que permite transformar todo el texto de entrada de config al arreglo 
+    public void mostrarConfiguracion(JTextPane paneLog) throws ErrorPuntualException, BadLocationException {
+
+        if (!this.listaTemporal.isEmpty()) {
+            this.listaTemporal.clear();
+        }
+
+        InputStream ruta = getClass().getResourceAsStream("/com/pablocompany/practicano1/target/configuracion/config.json");
+
+        if (ruta == null) {
+            throw new ErrorPuntualException("La configuracion fue eliminada");
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(ruta))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                linea = linea.trim();
+
+                this.listaTemporal.add(linea);
+
+            }
+        } catch (IOException ex) {
+            throw new ErrorPuntualException("No se ha podido procesar el archivo seleccionado");
+        }
+
+        if (this.listaTemporal.isEmpty()) {
+            throw new ErrorPuntualException("El archivo esta vacio");
+        }
+        //METODO UNICO QUE SIRVE PARA MOSTRAR EL CONFIG EN PANTALLA
+        pintarLogConfig(paneLog);
+
+    }
+
+    //Permite validar que el archivo tenga el formato correcto
+    public boolean comprobarEntradas(String texto) throws ErrorEncontradoException {
+
+        if (!this.listaTemporal.isEmpty()) {
+            this.listaTemporal.clear();
+        }
+
+        try (BufferedReader bufer = new BufferedReader(new StringReader(texto))) {
+            String linea;
+            while ((linea = bufer.readLine()) != null) {
+                this.listaTemporal.add(linea);
+            }
+        } catch (IOException ex) {
+            throw new ErrorEncontradoException("No se ha podido procesar el texto de entrada");
+        }
+
+        return validarConfig(this.listaTemporal);
+    }
+
+    //Metodo que sirve para validar que el formato se mantenga integro
+    public boolean validarConfig(ArrayList<String> lineas) throws ErrorEncontradoException {
+        int llaves = 0, corchetes = 0, comillas = 0;
+
+        boolean tienePalabras = false;
+        boolean tieneOperadores = false;
+        boolean tienePuntuacion = false;
+        boolean tieneAgrupacion = false;
+        boolean tieneComentarios = false;
+
+        for (String linea : lineas) {
+            // Contar balance de llaves y corchetes
+            for (char c : linea.toCharArray()) {
+                if (c == '{') {
+                    llaves++;
+                }
+                if (c == '}') {
+                    llaves--;
+                }
+                if (c == '[') {
+                    corchetes++;
+                }
+                if (c == ']') {
+                    corchetes--;
+                }
+                if (c == '"') {
+                    comillas++;
+                }
+            }
+
+            // Validar existencia de bloques obligatorios
+            if (linea.contains("\"palabrasReservadas\"")) {
+                tienePalabras = true;
+            }
+            if (linea.contains("\"operadores\"")) {
+                tieneOperadores = true;
+            }
+            if (linea.contains("\"puntuacion\"")) {
+                tienePuntuacion = true;
+            }
+            if (linea.contains("\"agrupacion\"")) {
+                tieneAgrupacion = true;
+            }
+            if (linea.contains("\"comentarios\"")) {
+                tieneComentarios = true;
+            }
+        }
+
+        if (llaves != 0) {
+            throw new ErrorEncontradoException("Llaves Sin cierre o apertura");
+        }
+
+        if (corchetes != 0) {
+            throw new ErrorEncontradoException("Corchetes Sin cierre o apertura");
+        }
+        if (comillas % 2 != 0) {
+            throw new ErrorEncontradoException("Comillas Sin cierre o apertura");
+        }
+
+        // Revisar secciones obligatorias
+        if (!tienePalabras) {
+            throw new ErrorEncontradoException("Falta sección 'palabrasReservadas'\nNo puedes cambiarle nombre");
+        }
+        if (!tieneOperadores) {
+            throw new ErrorEncontradoException("Falta sección 'operadores'\nNo puedes cambiarle nombre");
+        }
+        if (!tienePuntuacion) {
+            throw new ErrorEncontradoException("Falta sección 'puntuacion'\nNo puedes cambiarle nombre");
+        }
+        if (!tieneAgrupacion) {
+            throw new ErrorEncontradoException("Falta sección 'agrupacion'\nNo puedes cambiarle nombre");
+        }
+        if (!tieneComentarios) {
+            throw new ErrorEncontradoException("Falta sección 'comentarios'");
+        }
+
+        // Validar que la sección comentarios sea EXACTA
+        String bloqueEsperado = "   \"comentarios\": {\n     \"linea\": \"//\",\n     \"bloqueInicio\": \"/*\",\n     \"bloqueFin\": \"*/\"\n   }";
+
+        StringBuilder bloqueLeido = new StringBuilder();
+        boolean dentroComentarios = false;
+        for (String linea : lineas) {
+            if (linea.contains("\"comentarios\"")) {
+                dentroComentarios = true;
+            }
+            if (dentroComentarios) {
+                bloqueLeido.append(linea.trim()).append("\n");
+                if (linea.contains("}")) {
+                    dentroComentarios = false;
+                }
+            }
+        }
+
+        if (!bloqueLeido.toString().contains("\"linea\": \"//\"")
+                || !bloqueLeido.toString().contains("\"bloqueInicio\": \"/*\"")
+                || !bloqueLeido.toString().contains("\"bloqueFin\": \"*/\"")) {
+            throw new ErrorEncontradoException(" NO PUEDES ALTERAR LA SECCION 'comentarios' alterada.");
+        }
+        return true;
+    }
+
+    //Metodo que se encarga de mostrar el archivo de configuracion en pantalla
+    public void pintarLogConfig(JTextPane paneAnalisis) throws BadLocationException {
+
+        for (int i = 0; i < this.listaTemporal.size(); i++) {
+
+            String palabra = this.listaTemporal.get(i);
+
+            for (int j = 0; j < palabra.length(); j++) {
+
+                char caracter = palabra.charAt(j);
+
+                insertarPalabra(String.valueOf(caracter), new Color(0x297318), paneAnalisis);
+
+            }
+
+            insertarPalabra("\n", Color.BLACK, paneAnalisis);
+
+        }
+
+        paneAnalisis.setCaretPosition(0);
+
+    }
+
+    // Método que mapea el token a su color
+    private Color obtenerColorPorToken(char tipo) {
+        switch (tipo) {
+            case '{':
+            case '}':
+                return new Color(0xF0760E);
+            case '[':
+            case ']':
+                return new Color(0x6B4627);
+
+            default:
+                return new Color(0x9E7A7A);
+        }
+    }
+
+    //Metodo que trabaja en conjunto para poder ir pintando letra a letra
+    private void limpiarArea(JTextPane paneAnalisis) throws BadLocationException {
+        StyledDocument doc = paneAnalisis.getStyledDocument();
+        doc.remove(0, doc.getLength());
+
+    }
+
+    // Método para insertar texto con un color específico
+    private void insertarPalabra(String texto, Color color, JTextPane paneAnalisis) throws BadLocationException {
+
+        StyledDocument doc = paneAnalisis.getStyledDocument();
+        // Crear estilo temporal
+        SimpleAttributeSet estilo = new SimpleAttributeSet();
+        StyleConstants.setForeground(estilo, color);
+        // Inserta al final del documento
+        doc.insertString(doc.getLength(), texto, estilo);
+
+    }
+
 }
+
+//=====================FIN DEL APARTADO DE METODOS QUE SIRVEN PARA PODER MOSTRAR EN LA UI LA CONFIGURACION====================
+

@@ -8,7 +8,6 @@ import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
 import com.pablocompany.practicano1lfp.backDefrontend.IlustrarLabels;
-import com.pablocompany.practicano1lfp.backend.ConfigDatos;
 import com.pablocompany.practicano1lfp.backend.ConfigException;
 import com.pablocompany.practicano1lfp.backend.ErrorEncontradoException;
 import com.pablocompany.practicano1lfp.backend.ErrorPuntualException;
@@ -102,6 +101,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         this.btnAnalisis.setVisible(false);
         this.scrollErroresLog.setVisible(false);
         this.scrollBusquedas.setVisible(true);
+        this.txtBusquedas.setText("");
         this.txtLogBusquedas.setText("");
         this.lblMostrarError.setText("Resultados de busqueda:");
         this.lblAnalisis.setText("Busqueda de patrones:");
@@ -118,6 +118,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
     public void modificarConfig() {
         //Se despliega la ventana emergente para editar la configuracion
+        EditarConfiguracion dialog = new EditarConfiguracion(new javax.swing.JFrame(), true, leerEntradas);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+
+                if (gestionVentanas == 0) {
+                    regresarInicio();
+                }
+
+                if (gestionVentanas == 1) {
+                    mostrarBusquedas();
+                }
+
+            }
+        });
+        dialog.setVisible(true);
 
     }
 
@@ -182,11 +198,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelMedio.cambiarLabel(iconoMedio);
         this.lblEleccionesDadas.setText("Editar Configuracion");
 
-        modificarConfig();
-
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x2DB20C));
+        modificarConfig();
 
     }
 
@@ -219,11 +234,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         //Reinicia el permiso para accionar botones
         this.gestionVentanas = 0;
 
-        reestablecerUI();
-
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x323844));
+
+        reestablecerUI();
 
     }
 
@@ -720,26 +735,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_textEdicionArchivoKeyReleased
 
-    private void btnAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalisisActionPerformed
-        //Boton manual que permite analizar el texto
-        if (this.textEdicionArchivo.getText().isBlank()) {
-            return;
-        }
-
-        try {
-            //Detecta cada vez que se cambia una palabra
-            this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
-            this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
-
-        } catch (AnalizadorLexicoException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
-        } catch (ConfigException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
-        } catch (BadLocationException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnAnalisisActionPerformed
-
     private void textLogErroresKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textLogErroresKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_textLogErroresKeyReleased
@@ -790,6 +785,26 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void txtLogBusquedasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLogBusquedasKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtLogBusquedasKeyReleased
+
+    private void btnAnalisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalisisActionPerformed
+        //Boton manual que permite analizar el texto
+        if (this.textEdicionArchivo.getText().isBlank()) {
+            return;
+        }
+
+        try {
+            //Detecta cada vez que se cambia una palabra
+            this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+            this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
+
+        } catch (AnalizadorLexicoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
+        } catch (ConfigException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Carga", JOptionPane.ERROR_MESSAGE);
+        } catch (BadLocationException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAnalisisActionPerformed
 
     /**
      * @param args the command line arguments
