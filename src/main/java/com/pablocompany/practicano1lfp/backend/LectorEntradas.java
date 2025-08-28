@@ -7,9 +7,12 @@ package com.pablocompany.practicano1lfp.backend;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexico;
 import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
@@ -107,6 +110,35 @@ public class LectorEntradas {
     //Metodo que retorna la referencia de config
     public ConfigDatos getDatosConfig(){
         return this.constantesConfig;
+    }
+    
+    //METODO UTILIZADO PARA EXPORTAR EL TEXTO ESCRITO EN EL LOG DE EDICION
+    public String exportarArchivo() throws ErrorPuntualException{
+        
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Selecciona el directorio de Almacenamiento");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        
+        int resultado = chooser.showOpenDialog(null);
+        
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            // Actualiza tu clase con el path seleccionado
+
+            File seleccionado = chooser.getSelectedFile();
+            if (seleccionado.exists()) {
+                
+                return seleccionado.getAbsolutePath() + File.separator;
+
+                
+            } else {
+                throw new ErrorPuntualException("El directorio seleccionado no existe");
+                
+            }
+            
+        }
+        
+        return null;
     }
 
 }

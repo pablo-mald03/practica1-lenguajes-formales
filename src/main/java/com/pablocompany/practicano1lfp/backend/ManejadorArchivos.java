@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
@@ -114,6 +116,35 @@ public class ManejadorArchivos {
     //Metodo que sirve para reiniciar el path de entrada
     public void reiniciarPath() {
         this.pathEntrada = "";
+    }
+
+    //Metodo que sirve para poder exportar lo que se escribe en el log
+    public void exportarArchivoCreado(String directorio, ArrayList<String> lineas, String nombreArchivo) throws AnalizadorLexicoException {
+
+        if (directorio.isBlank()) {
+            throw new AnalizadorLexicoException("No hay ningun archivo subido aun");
+        }
+
+        File comprobacion = new File(directorio);
+        if (!comprobacion.exists()) {
+            throw new AnalizadorLexicoException("Aun no se ha definido un path para almacenar el archivo");
+        }
+
+        //Se genera la hora de exportacion para evitar duplicados
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String fechaHora = ahora.format(formatter);
+
+        File archivo = new File(directorio + File.separator + nombreArchivo + "_" + fechaHora + ".txt");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, false))) {
+            for (String linea : lineas) {
+                bw.write(linea);
+                bw.newLine(); 
+            }
+        } catch (IOException e) {
+            throw new AnalizadorLexicoException("No hay un path definido para reescribir el archivo");
+        }
     }
 
 }

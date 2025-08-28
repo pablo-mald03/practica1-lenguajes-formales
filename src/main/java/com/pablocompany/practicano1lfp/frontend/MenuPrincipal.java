@@ -77,7 +77,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             this.leerEntradas = new LectorEntradas();
         } catch (ConfigException ex) {
             System.out.println("Error de Lectura" + ex.getMessage());
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de apertura archivo", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -742,6 +742,19 @@ public class MenuPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textLogErroresKeyReleased
 
+    //Metodo de UI que permite nombrar algo y no permite vacios
+    private String pedirNombre(String mensaje) {
+        String entrada = JOptionPane.showInputDialog(null, mensaje);
+
+        // Si el usuario presiona "Cancelar" o deja vacío
+        if (entrada == null || entrada.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No puedes dejarlo en blanco. Intenta de nuevo.");
+            return pedirNombre(mensaje); 
+        }
+
+        return entrada.trim().replace(" ", "_"); 
+    }
+    
     private void btnGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivoActionPerformed
         //EJECUTA LAS ACCIONES RESPECTIVAS PARA PODER GUARDAR UN ARCHIVO
 
@@ -751,7 +764,30 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 return;
             }
 
-            return;
+            try {
+                String path = this.leerEntradas.exportarArchivo();
+
+                if (path != null) {
+
+                    this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
+
+                    ArrayList<String> lista = this.leerEntradas.getListado();
+                    
+                    String nombreArchivo = pedirNombre("Escriba el nombre del archivo a exportar\nNo deje el espacio vacio");
+
+                    this.manipuladorDirectorios.exportarArchivoCreado(path, lista,nombreArchivo);
+                    
+                    JOptionPane.showMessageDialog(this,"Archivo exportado correctamente", "Archivo exportado", JOptionPane.INFORMATION_MESSAGE);
+
+                    return;
+                }
+
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Patron no Encontrado", JOptionPane.INFORMATION_MESSAGE);
+            } catch (AnalizadorLexicoException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Guardado", JOptionPane.ERROR_MESSAGE);
+            }
+
         }
 
         if (this.gestionVentanas == 1) {
@@ -799,7 +835,6 @@ public class MenuPrincipal extends javax.swing.JFrame {
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
             this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
-            
 
         } catch (AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);
