@@ -71,6 +71,7 @@ public class MostrarReportes extends javax.swing.JDialog {
         lblCantidadErrores = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtAreaNoToken = new javax.swing.JTextArea();
+        lblCalificaion = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Visualizacion de Reportes");
@@ -146,7 +147,7 @@ public class MostrarReportes extends javax.swing.JDialog {
                 .addComponent(lblAnalisis, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelErroesLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 28, Short.MAX_VALUE)
                 .addComponent(jScrollTablero, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
             .addGroup(panelErroesLayout.createSequentialGroup()
@@ -205,24 +206,31 @@ public class MostrarReportes extends javax.swing.JDialog {
         txtAreaNoToken.setText("Tokens no utilizados:");
         jScrollPane3.setViewportView(txtAreaNoToken);
 
+        lblCalificaion.setFont(new java.awt.Font("Liberation Sans", 1, 25)); // NOI18N
+        lblCalificaion.setForeground(new java.awt.Color(10, 83, 28));
+        lblCalificaion.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblCalificaion.setText("Calificacion:");
+
         javax.swing.GroupLayout panelErroes1Layout = new javax.swing.GroupLayout(panelErroes1);
         panelErroes1.setLayout(panelErroes1Layout);
         panelErroes1Layout.setHorizontalGroup(
             panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelErroes1Layout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addComponent(lblAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelErroes1Layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(lblAnalisis1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelErroes1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblCalificaion, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelErroes1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblPorcentajeValidos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelErroes1Layout.createSequentialGroup()
-                        .addGroup(panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblCantidadErrores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(panelErroes1Layout.createSequentialGroup()
-                                .addComponent(lblPorcentajeValidos, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblCantidadErrores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReporteGeneral)))
                 .addGap(20, 20, 20))
@@ -232,18 +240,17 @@ public class MostrarReportes extends javax.swing.JDialog {
             .addGroup(panelErroes1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblAnalisis1)
-                .addGroup(panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelErroes1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(lblCantidadErrores)
-                        .addGap(33, 33, 33)
-                        .addComponent(lblPorcentajeValidos))
-                    .addGroup(panelErroes1Layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(btnReporteGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(26, 26, 26)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCalificaion, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(panelErroes1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCantidadErrores)
+                    .addComponent(btnReporteGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblPorcentajeValidos)
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -251,7 +258,7 @@ public class MostrarReportes extends javax.swing.JDialog {
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrincipalLayout.createSequentialGroup()
-                .addContainerGap(311, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(235, 235, 235))
             .addGroup(panelPrincipalLayout.createSequentialGroup()
@@ -259,7 +266,7 @@ public class MostrarReportes extends javax.swing.JDialog {
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(panelErroes1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelErroes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(559, Short.MAX_VALUE))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,8 +276,8 @@ public class MostrarReportes extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelErroes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelErroes1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(panelErroes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
@@ -339,7 +346,31 @@ public class MostrarReportes extends javax.swing.JDialog {
     }//GEN-LAST:event_btnGenerarErroresActionPerformed
 
     private void btnReporteGeneralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteGeneralActionPerformed
-        // TODO add your handling code here:
+        //Muestra el reporte de calificacion
+          try {
+
+            if (this.gestionLecturas == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (this.gestionLecturas.getGenerarReportes() == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                //Boton manual que permite generar el reporte de calificacion
+                this.gestionLecturas.getGenerarReportes().generarReporteGeneral(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.lblCantidadErrores, this.lblPorcentajeValidos, this.txtAreaNoToken);
+
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Analisis", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+
+        }
     }//GEN-LAST:event_btnReporteGeneralActionPerformed
 
     /**
@@ -354,6 +385,7 @@ public class MostrarReportes extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollTablero;
     private javax.swing.JLabel lblAnalisis;
     private javax.swing.JLabel lblAnalisis1;
+    private javax.swing.JLabel lblCalificaion;
     private javax.swing.JLabel lblCantidadErrores;
     private javax.swing.JLabel lblPorcentajeValidos;
     private javax.swing.JLabel lblReportes;

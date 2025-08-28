@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -63,6 +65,98 @@ public class GenerarReportes {
         this.guardarArchivo = new File(PATH_PREDETERMINADO);
         this.directorioArchivo = folder;
         this.pathDefinitivo = PATH_PREDETERMINADO;
+
+    }
+
+    //Metodo util para poder mostrar los errores en pantalla en la tabla 
+    public void generarReporteGeneral(ArrayList<Sentencia> sentenciasListado, JLabel labelCantidadError, JLabel labelPorcentaje, JTextArea cantidadTokensArea) throws ErrorPuntualException {
+
+        //Solo se encarga de actualizar el estado de errores y de paso lo cuenta
+        int cantidadErrores = 0;
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+                    if (!this.hayErrores) {
+                        this.hayErrores = true;
+                    }
+
+                    cantidadErrores++;
+                }
+
+            }
+
+        }
+
+        labelCantidadError.setText("Cantidad de Errores: " + cantidadErrores);
+
+        ArrayList<String> listaTokens = new ArrayList<>();
+        listaTokens.add(Token.IDENTIFICADOR.getTipo());
+        listaTokens.add(Token.NUMERO.getTipo());
+        listaTokens.add(Token.DECIMAL.getTipo());
+        listaTokens.add(Token.CADENA.getTipo());
+        listaTokens.add(Token.PALABRA_RESERVADA.getTipo());
+        listaTokens.add(Token.PUNTUACION.getTipo());
+        listaTokens.add(Token.OPERADOR.getTipo());
+        listaTokens.add(Token.AGRUPACION.getTipo());
+        listaTokens.add(Token.COMENTARIO_LINEA.getTipo());
+        listaTokens.add(Token.COMENTARIO_BLOQUE.getTipo());
+        listaTokens.add(Token.ERROR.getTipo());
+
+        //Cuenta todos los lexemas escritos
+        int lexemasEncontrados = 0;
+
+        //Cuenta todos los errores encontrados
+        int erroresEncontrados = 0;
+
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+
+                lexemasEncontrados++;
+
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+
+                    erroresEncontrados++;
+                }
+
+                for (Nodo nodoRecorrido : lexemaEvaluado.obtenerListaNodo()) {
+
+                    if (listaTokens.contains(nodoRecorrido.getToken().getTipo())) {
+
+                        listaTokens.remove(nodoRecorrido.getToken().getTipo());
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        int totalValidos = lexemasEncontrados - erroresEncontrados;
+        double porcentajeCalificacion = (totalValidos * 100.0) / lexemasEncontrados;
+
+        labelPorcentaje.setText("Porcentaje Tokens Validos: " + Math.floor(porcentajeCalificacion) + "%");
+
+        cantidadTokensArea.setText("");
+
+        if (listaTokens.isEmpty()) {
+            cantidadTokensArea.setText("Tokens no utilizados: SE HAN UTILIZADO TODOS LOS TOKENS");
+        }else{
+            
+            cantidadTokensArea.setText("Tokens no utilizados: ");
+            
+            for (String listaToken : listaTokens) {
+                cantidadTokensArea.setText(cantidadTokensArea.getText() + " | "+listaToken);
+                
+            }
+            
+        }
 
     }
 
@@ -154,6 +248,7 @@ public class GenerarReportes {
 
     }
 
+    //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
     public void generarReporteErrores() throws ErrorPuntualException {
         reportarErroresCSV(this.listaErrores, "ReporteErrores", "Cadena_Error,Posicion");
     }
