@@ -23,9 +23,17 @@ public class MostrarReportes extends javax.swing.JDialog {
      * Creates new form MostrarReportes
      */
     private LectorEntradas gestionLecturas;
-
+    //Gestiona el reporte de errores
     private ModificarTabla mdTablitaErrores;
     private CrearTableros crearTableroErrores;
+    
+    //Gestiona el reporte de conteo lexemas
+    private ModificarTabla mdTablitaConteo;
+    private CrearTableros crearTableroConteo;
+    
+    //Gestiona el reporte de tokenizacion de lexemas
+    private ModificarTabla mdTablitaTokenizacion;
+    private CrearTableros crearTableroTokenizacion;
 
     public MostrarReportes(java.awt.Frame parent, boolean modal, LectorEntradas gestorLecturas) {
         super(parent, modal);
@@ -35,6 +43,8 @@ public class MostrarReportes extends javax.swing.JDialog {
 
         ColocarFondos pintarPanel = new ColocarFondos(this, this.panelPrincipal);
         ((JViewport) tableroMuestraErrores.getParent()).setBackground(new Color(0xC0BFBF));
+        ((JViewport) tableroConteoLexermas.getParent()).setBackground(new Color(0xF2D7B4));
+        ((JViewport) tableroConteoTokens.getParent()).setBackground(new Color(0xF2D7B4));
 
         pintarPanel.pintarDialog("/com/pablocompany/practicano1/target/images/overlay2.png");
 
@@ -44,6 +54,12 @@ public class MostrarReportes extends javax.swing.JDialog {
 
         this.mdTablitaErrores = new ModificarTabla(this.tableroMuestraErrores);
         this.crearTableroErrores = new CrearTableros(this.tableroMuestraErrores);
+        
+        this.mdTablitaConteo = new ModificarTabla(this.tableroConteoLexermas);
+        this.crearTableroConteo = new CrearTableros(this.tableroConteoLexermas);
+        
+        this.mdTablitaTokenizacion = new ModificarTabla(this.tableroConteoTokens);
+        this.crearTableroTokenizacion = new CrearTableros(this.tableroConteoTokens);
 
     }
 
@@ -72,6 +88,18 @@ public class MostrarReportes extends javax.swing.JDialog {
         jScrollPane3 = new javax.swing.JScrollPane();
         txtAreaNoToken = new javax.swing.JTextArea();
         lblCalificaion = new javax.swing.JLabel();
+        panelErroes2 = new javax.swing.JPanel();
+        jScrollTablero1 = new javax.swing.JScrollPane();
+        tableroConteoLexermas = new javax.swing.JTable();
+        lblAnalisis2 = new javax.swing.JLabel();
+        btnExportarConteo = new javax.swing.JButton();
+        btnReporteConteo = new javax.swing.JButton();
+        lblConteoLexemas = new javax.swing.JLabel();
+        lblConteoLexemas1 = new javax.swing.JLabel();
+        jScrollTablero2 = new javax.swing.JScrollPane();
+        tableroConteoTokens = new javax.swing.JTable();
+        btnReportarToken = new javax.swing.JButton();
+        btnExportarToken = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Visualizacion de Reportes");
@@ -253,20 +281,198 @@ public class MostrarReportes extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        panelErroes2.setBorder(javax.swing.BorderFactory.createMatteBorder(5, 5, 5, 5, new java.awt.Color(50, 56, 68)));
+        panelErroes2.setOpaque(false);
+
+        jScrollTablero1.setBackground(new java.awt.Color(242, 215, 180));
+        jScrollTablero1.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(0, 0, 0)));
+
+        tableroConteoLexermas.setBackground(new java.awt.Color(242, 215, 180));
+        tableroConteoLexermas.setFont(new java.awt.Font("Liberation Serif", 0, 18)); // NOI18N
+        tableroConteoLexermas.setForeground(new java.awt.Color(0, 0, 0));
+        tableroConteoLexermas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tableroConteoLexermas.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableroConteoLexermas.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tableroConteoLexermas.setGridColor(new java.awt.Color(0, 0, 0));
+        tableroConteoLexermas.setRowSelectionAllowed(false);
+        tableroConteoLexermas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableroConteoLexermasMousePressed(evt);
+            }
+        });
+        jScrollTablero1.setViewportView(tableroConteoLexermas);
+
+        lblAnalisis2.setFont(new java.awt.Font("Liberation Sans", 1, 28)); // NOI18N
+        lblAnalisis2.setForeground(new java.awt.Color(83, 31, 11));
+        lblAnalisis2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAnalisis2.setText("Reporte de Tokens:");
+
+        btnExportarConteo.setBackground(new java.awt.Color(45, 93, 136));
+        btnExportarConteo.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        btnExportarConteo.setForeground(new java.awt.Color(221, 219, 219));
+        btnExportarConteo.setText("Exportar Reporte");
+        btnExportarConteo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportarConteoActionPerformed(evt);
+            }
+        });
+
+        btnReporteConteo.setBackground(new java.awt.Color(46, 136, 80));
+        btnReporteConteo.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        btnReporteConteo.setForeground(new java.awt.Color(229, 227, 227));
+        btnReporteConteo.setText("Generar Reporte");
+        btnReporteConteo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteConteoActionPerformed(evt);
+            }
+        });
+
+        lblConteoLexemas.setFont(new java.awt.Font("Liberation Sans", 1, 28)); // NOI18N
+        lblConteoLexemas.setForeground(new java.awt.Color(10, 83, 28));
+        lblConteoLexemas.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblConteoLexemas.setText("Reporte Conteo Lexemas:");
+
+        lblConteoLexemas1.setFont(new java.awt.Font("Liberation Sans", 1, 28)); // NOI18N
+        lblConteoLexemas1.setForeground(new java.awt.Color(10, 83, 28));
+        lblConteoLexemas1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblConteoLexemas1.setText("Reporte Tokens Lexemas:");
+
+        jScrollTablero2.setBackground(new java.awt.Color(242, 215, 180));
+        jScrollTablero2.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 3, 3, 3, new java.awt.Color(0, 0, 0)));
+
+        tableroConteoTokens.setBackground(new java.awt.Color(242, 215, 180));
+        tableroConteoTokens.setFont(new java.awt.Font("Liberation Serif", 0, 18)); // NOI18N
+        tableroConteoTokens.setForeground(new java.awt.Color(0, 0, 0));
+        tableroConteoTokens.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        tableroConteoTokens.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tableroConteoTokens.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        tableroConteoTokens.setGridColor(new java.awt.Color(0, 0, 0));
+        tableroConteoTokens.setRowSelectionAllowed(false);
+        tableroConteoTokens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableroConteoTokensMousePressed(evt);
+            }
+        });
+        jScrollTablero2.setViewportView(tableroConteoTokens);
+
+        btnReportarToken.setBackground(new java.awt.Color(46, 136, 80));
+        btnReportarToken.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        btnReportarToken.setForeground(new java.awt.Color(229, 227, 227));
+        btnReportarToken.setText("Generar Reporte");
+        btnReportarToken.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportarTokenActionPerformed(evt);
+            }
+        });
+
+        btnExportarToken.setBackground(new java.awt.Color(45, 93, 136));
+        btnExportarToken.setFont(new java.awt.Font("Liberation Sans", 1, 20)); // NOI18N
+        btnExportarToken.setForeground(new java.awt.Color(221, 219, 219));
+        btnExportarToken.setText("Exportar Reporte");
+        btnExportarToken.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportarTokenActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelErroes2Layout = new javax.swing.GroupLayout(panelErroes2);
+        panelErroes2.setLayout(panelErroes2Layout);
+        panelErroes2Layout.setHorizontalGroup(
+            panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelErroes2Layout.createSequentialGroup()
+                .addGroup(panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelErroes2Layout.createSequentialGroup()
+                        .addGap(95, 95, 95)
+                        .addComponent(lblAnalisis2, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelErroes2Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(lblConteoLexemas, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(panelErroes2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnReporteConteo, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80)
+                .addComponent(btnExportarConteo, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(70, 70, 70))
+            .addGroup(panelErroes2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelErroes2Layout.createSequentialGroup()
+                        .addGroup(panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollTablero1)
+                            .addComponent(jScrollTablero2)
+                            .addGroup(panelErroes2Layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(lblConteoLexemas1, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
+                    .addGroup(panelErroes2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                        .addComponent(btnReportarToken, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(76, 76, 76)
+                        .addComponent(btnExportarToken, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(76, 76, 76))))
+        );
+        panelErroes2Layout.setVerticalGroup(
+            panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelErroes2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblAnalisis2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblConteoLexemas, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollTablero1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnReporteConteo)
+                    .addComponent(btnExportarConteo))
+                .addGap(18, 18, 18)
+                .addComponent(lblConteoLexemas1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollTablero2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelErroes2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnReportarToken)
+                    .addComponent(btnExportarToken))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrincipalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(235, 235, 235))
             .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panelErroes1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelErroes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(559, Short.MAX_VALUE))
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panelErroes1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelErroes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(panelErroes2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGap(142, 142, 142)
+                        .addComponent(lblReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 1046, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,9 +480,12 @@ public class MostrarReportes extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(lblReportes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelErroes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(panelErroes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addComponent(panelErroes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(panelErroes1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelErroes2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -373,25 +582,109 @@ public class MostrarReportes extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnReporteGeneralActionPerformed
 
+    private void tableroConteoLexermasMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableroConteoLexermasMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableroConteoLexermasMousePressed
+
+    private void btnExportarConteoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarConteoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportarConteoActionPerformed
+
+    private void btnReporteConteoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteConteoActionPerformed
+        //Muestra el reporte en la tabla de conteo de lexemas
+         try {
+
+            if (this.gestionLecturas == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (this.gestionLecturas.getGenerarReportes() == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                //Boton manual que permite generar el reporte de conteo de lexemas
+                this.gestionLecturas.getGenerarReportes().generarReporteConteoLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaErrores, this.crearTableroErrores);
+
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Inconveniente encontrado", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+
+        }
+    }//GEN-LAST:event_btnReporteConteoActionPerformed
+
+    private void tableroConteoTokensMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableroConteoTokensMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableroConteoTokensMousePressed
+
+    private void btnReportarTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportarTokenActionPerformed
+        //Muestra el reporte en la tabla de tokenizacion de lexemas
+         try {
+
+            if (this.gestionLecturas == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (this.gestionLecturas.getGenerarReportes() == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                //Boton manual que permite generar el reporte de conteo de lexemas
+                this.gestionLecturas.getGenerarReportes().generarReporteTokenizacionLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaErrores, this.crearTableroErrores);
+
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Inconveniente encontrado", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+
+        }
+    }//GEN-LAST:event_btnReportarTokenActionPerformed
+
+    private void btnExportarTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarTokenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnExportarTokenActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExportarConteo;
     private javax.swing.JButton btnExportarErroes;
+    private javax.swing.JButton btnExportarToken;
     private javax.swing.JButton btnGenerarErrores;
+    private javax.swing.JButton btnReportarToken;
+    private javax.swing.JButton btnReporteConteo;
     private javax.swing.JButton btnReporteGeneral;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollTablero;
+    private javax.swing.JScrollPane jScrollTablero1;
+    private javax.swing.JScrollPane jScrollTablero2;
     private javax.swing.JLabel lblAnalisis;
     private javax.swing.JLabel lblAnalisis1;
+    private javax.swing.JLabel lblAnalisis2;
     private javax.swing.JLabel lblCalificaion;
     private javax.swing.JLabel lblCantidadErrores;
+    private javax.swing.JLabel lblConteoLexemas;
+    private javax.swing.JLabel lblConteoLexemas1;
     private javax.swing.JLabel lblPorcentajeValidos;
     private javax.swing.JLabel lblReportes;
     private javax.swing.JPanel panelErroes;
     private javax.swing.JPanel panelErroes1;
+    private javax.swing.JPanel panelErroes2;
     private javax.swing.JPanel panelPrincipal;
+    private javax.swing.JTable tableroConteoLexermas;
+    private javax.swing.JTable tableroConteoTokens;
     private javax.swing.JTable tableroMuestraErrores;
     private javax.swing.JTextArea txtAreaNoToken;
     // End of variables declaration//GEN-END:variables

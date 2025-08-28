@@ -67,6 +67,137 @@ public class GenerarReportes {
         this.pathDefinitivo = PATH_PREDETERMINADO;
 
     }
+    
+    
+    //Metodo util para poder mostrar las tokenizaciones de lexemas tokens normales
+    public void generarReporteTokenizacionLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
+
+        //Cuenta los errores para ver si hay 
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+                    this.hayErrores = true;
+                    break;
+                }
+
+            }
+
+            if (this.hayErrores) {
+                break;
+            }
+
+        }
+
+        if (this.hayErrores) {
+            throw new ErrorPuntualException("No se puede generar el reporte porque hay errores registrados");
+        }
+
+        crearTablero.vaciarTablero();
+
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                /* Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+
+                    this.listaErrores.add(lexemaEvaluado.getCadenaError());
+
+                    String coordenada = "(";
+                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " - ";
+
+                    int columnaTope = 0;
+
+                    for (Nodo nodoRecorrido : lexemaEvaluado.obtenerListaNodo()) {
+
+                        if (nodoRecorrido.getToken() != Token.ERROR) {
+                            break;
+                        }
+
+                        columnaTope = nodoRecorrido.getColumna();
+
+                    }
+
+                    coordenada += String.valueOf(columnaTope) + ")";
+
+                    this.listaErrores.add(coordenada);
+
+                }
+                 */
+            }
+
+        }
+
+    }
+
+    //Metodo util para poder mostrar los conteos de lexemas tokens normales
+    public void generarReporteConteoLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
+
+        //Cuenta los errores para ver si hay 
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+                    this.hayErrores = true;
+                    break;
+                }
+
+            }
+
+            if (this.hayErrores) {
+                break;
+            }
+
+        }
+
+        if (this.hayErrores) {
+            throw new ErrorPuntualException("No se puede generar el reporte porque hay errores registrados");
+        }
+
+        crearTablero.vaciarTablero();
+
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                /* Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+
+                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+
+                    this.listaErrores.add(lexemaEvaluado.getCadenaError());
+
+                    String coordenada = "(";
+                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " - ";
+
+                    int columnaTope = 0;
+
+                    for (Nodo nodoRecorrido : lexemaEvaluado.obtenerListaNodo()) {
+
+                        if (nodoRecorrido.getToken() != Token.ERROR) {
+                            break;
+                        }
+
+                        columnaTope = nodoRecorrido.getColumna();
+
+                    }
+
+                    coordenada += String.valueOf(columnaTope) + ")";
+
+                    this.listaErrores.add(coordenada);
+
+                }
+                 */
+            }
+
+        }
+
+    }
 
     //Metodo util para poder mostrar los errores en pantalla en la tabla 
     public void generarReporteGeneral(ArrayList<Sentencia> sentenciasListado, JLabel labelCantidadError, JLabel labelPorcentaje, JTextArea cantidadTokensArea) throws ErrorPuntualException {
@@ -147,15 +278,15 @@ public class GenerarReportes {
 
         if (listaTokens.isEmpty()) {
             cantidadTokensArea.setText("Tokens no utilizados: SE HAN UTILIZADO TODOS LOS TOKENS");
-        }else{
-            
+        } else {
+
             cantidadTokensArea.setText("Tokens no utilizados: ");
-            
+
             for (String listaToken : listaTokens) {
-                cantidadTokensArea.setText(cantidadTokensArea.getText() + " | "+listaToken);
-                
+                cantidadTokensArea.setText(cantidadTokensArea.getText() + " | " + listaToken);
+
             }
-            
+
         }
 
     }
