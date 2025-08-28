@@ -42,7 +42,10 @@ public class GenerarReportes {
     private ArrayList<String> listaErrores = new ArrayList<>(5000);
 
     //Listado de lexemas
-    private ArrayList<String> listadoLexemas = new ArrayList<>(900);
+    private ArrayList<String> listadoLexemas = new ArrayList<>(2000);
+
+    //Listado de tokens
+    private ArrayList<String> listadoTokens = new ArrayList<>(2000);
 
     //------------------FIN DEL APARTADO DE MANEJO DE ATRIBUTOS DEL REPORTE--------------
     public GenerarReportes() {
@@ -132,8 +135,8 @@ public class GenerarReportes {
         if (this.listadoLexemas.isEmpty()) {
             throw new ErrorPuntualException("No se ha encontrado ningun lexema ");
         }
-        
-        String[] titulos = {"Nombre Token", "Lexema","Posicion"};
+
+        String[] titulos = {"Nombre Token", "Lexema", "Posicion"};
         crearTablero.tableroConTitulo(titulos, this.listadoLexemas.size() / 3, 3, true);
         modificarTabla.reendereizarTablero();
 
@@ -150,8 +153,6 @@ public class GenerarReportes {
             modificarTabla.colocarTextos(iterador, 2, posicion);
             iterador++;
         }
-        
-        
 
     }
 
@@ -164,9 +165,12 @@ public class GenerarReportes {
         if (!this.listaErrores.isEmpty()) {
             this.listaErrores.clear();
         }
+        if (!this.listadoTokens.isEmpty()) {
+            this.listadoTokens.clear();
+        }
     }
 
-    //Metodo util para poder mostrar los conteos de lexemas tokens normales
+    //Metodo util para poder mostrar los conteos de lexemas las veces que aparecen
     public void generarReporteTokenizacionLexemas(ArrayList<Sentencia> sentenciasListado, ModificarTabla modificarTabla, CrearTableros crearTablero) throws ErrorPuntualException {
 
         this.hayErrores = false;
@@ -195,41 +199,98 @@ public class GenerarReportes {
 
         crearTablero.vaciarTablero();
 
+        if (!this.listadoTokens.isEmpty()) {
+            this.listadoTokens.clear();
+        }
+
         for (Sentencia sentencia : sentenciasListado) {
 
             for (int i = 0; i < sentencia.limiteLexemas(); i++) {
 
-                /* Lexema lexemaEvaluado = sentencia.getListaLexema(i);
+                Lexema lexemaEvaluado = sentencia.getListaLexema(i);
 
-                if (!lexemaEvaluado.getCadenaError().isBlank()) {
+                if (!lexemaEvaluado.getLexema().isBlank()) {
 
-                    this.listaErrores.add(lexemaEvaluado.getCadenaError());
+                    if (!tokenYaExistente(lexemaEvaluado.getLexema(),lexemaEvaluado.getEstadoAnalisis().getTipo())) {
+                        
+                        this.listadoTokens.add(lexemaEvaluado.getLexema());
+                        this.listadoTokens.add(lexemaEvaluado.getEstadoAnalisis().getTipo());
 
-                    String coordenada = "(";
-                    coordenada += String.valueOf(lexemaEvaluado.getFilaCoordenada()) + " - ";
+                        int cantidadVeces = contarLexemas(lexemaEvaluado, sentenciasListado);
 
-                    int columnaTope = 0;
-
-                    for (Nodo nodoRecorrido : lexemaEvaluado.obtenerListaNodo()) {
-
-                        if (nodoRecorrido.getToken() != Token.ERROR) {
-                            break;
-                        }
-
-                        columnaTope = nodoRecorrido.getColumna();
-
+                        this.listadoTokens.add(String.valueOf(cantidadVeces));
                     }
 
-                    coordenada += String.valueOf(columnaTope) + ")";
-
-                    this.listaErrores.add(coordenada);
-
                 }
-                 */
+
             }
 
         }
 
+        if (this.listadoTokens.isEmpty()) {
+            throw new ErrorPuntualException("No se ha encontrado ningun lexema ");
+        }
+
+        String[] titulos = {"Lexema", "Tipo de Token", "Cantidad"};
+        crearTablero.tableroConTitulo(titulos, this.listadoTokens.size() / 3, 3, true);
+        modificarTabla.reendereizarTablero();
+
+        int iterador = 0;
+
+        for (int i = 0; i < this.listadoTokens.size(); i += 3) {
+
+            String lexema = this.listadoTokens.get(i);
+            String tipo = this.listadoTokens.get(i + 1);
+            String cantidad = this.listadoTokens.get(i + 2);
+
+            modificarTabla.colocarTextos(iterador, 0, lexema);
+            modificarTabla.colocarTextos(iterador, 1, tipo);
+            modificarTabla.colocarTextos(iterador, 2, cantidad);
+            iterador++;
+        }
+
+    }
+    
+    //Metodo que valida que el pese al lexema que se encuentre sea de diferente tipo de token 
+    private boolean tokenYaExistente(String palabra, String token){
+        
+        for (int i = 0; i < this.listadoTokens.size(); i += 3) {
+
+            String lexema = this.listadoTokens.get(i);
+            String tipo = this.listadoTokens.get(i + 1);
+
+            if(palabra.equals(lexema) && token.equals(tipo)){
+                return true;
+            }
+            
+        }
+        
+        return false;
+    }
+
+    //Metodo que ayuda a contar la cantidad de veces que aparecen los lexemas en el texto
+    private int contarLexemas(Lexema lexemaUbicado, ArrayList<Sentencia> sentenciasListado) {
+
+        int contadorVeces = 0;
+        for (Sentencia sentencia : sentenciasListado) {
+
+            for (int i = 0; i < sentencia.limiteLexemas(); i++) {
+
+                Lexema lexemaComparado = sentencia.getListaLexema(i);
+
+                if (!lexemaComparado.getLexema().isBlank()) {
+
+                    if (lexemaUbicado.getLexema().equals(lexemaComparado.getLexema()) && lexemaUbicado.getEstadoAnalisis() == lexemaComparado.getEstadoAnalisis()) {
+                        contadorVeces++;
+                    }
+
+                }
+
+            }
+
+        }
+
+        return contadorVeces;
     }
 
     //Metodo util para poder mostrar los errores en pantalla en la tabla 
@@ -415,6 +476,11 @@ public class GenerarReportes {
     //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
     public void generarReporteErrores() throws ErrorPuntualException {
         reportarErroresCSV(this.listaErrores, "ReporteErrores", "Cadena_Error,Posicion");
+    }
+
+    //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
+    public void generarReporteSinErroresTokens() throws ErrorPuntualException {
+        reportarSinErroresCSV(this.listadoTokens, "ReporteCantidadLexemas", "Lexema,Tipo_Token,Cantidad", "Cantidad de Tokens");
     }
 
     //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores

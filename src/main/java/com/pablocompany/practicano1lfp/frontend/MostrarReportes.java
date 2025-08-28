@@ -650,7 +650,7 @@ public class MostrarReportes extends javax.swing.JDialog {
     }//GEN-LAST:event_tableroConteoTokensMousePressed
 
     private void btnReportarTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportarTokenActionPerformed
-        //Muestra el reporte en la tabla de tokenizacion de lexemas
+        //Muestra el reporte en la tabla de conteo de lexemas en cantidad de veces que aparece
         try {
 
             if (this.gestionLecturas == null) {
@@ -665,7 +665,7 @@ public class MostrarReportes extends javax.swing.JDialog {
 
             try {
                 //Boton manual que permite generar el reporte de conteo de lexemas
-                this.gestionLecturas.getGenerarReportes().generarReporteTokenizacionLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaErrores, this.crearTableroErrores);
+                this.gestionLecturas.getGenerarReportes().generarReporteTokenizacionLexemas(this.gestionLecturas.getLexerActual().getListadoSentencias(), this.mdTablitaTokenizacion, this.crearTableroTokenizacion);
 
             } catch (ErrorPuntualException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Inconveniente encontrado", JOptionPane.ERROR_MESSAGE);
@@ -678,7 +678,33 @@ public class MostrarReportes extends javax.swing.JDialog {
     }//GEN-LAST:event_btnReportarTokenActionPerformed
 
     private void btnExportarTokenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarTokenActionPerformed
-        // TODO add your handling code here:
+        //Exporta el reporte a csv de la cantidad de tokens
+        
+         //Exporta el reporte de conteo de lexemas
+        try {
+            if (this.gestionLecturas == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (this.gestionLecturas.getGenerarReportes() == null) {
+                JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                //Boton manual que permite exporter el reporte de cantidad de lexemas
+                this.gestionLecturas.getGenerarReportes().generarReporteSinErroresTokens();
+
+                JOptionPane.showMessageDialog(this, "Reporte de Conteo de Lexemas generado Correctamente\nCarpeta: /Reportes", "Reporte Conteo de Lexemas Generado", JOptionPane.INFORMATION_MESSAGE);
+            } catch (ErrorPuntualException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Exportacion", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(this, "No hay texto registrado en el analizador\nEscribe algo para poderlo analizar", "Texto Vacio", JOptionPane.ERROR_MESSAGE);
+
+        }
     }//GEN-LAST:event_btnExportarTokenActionPerformed
 
     /**
