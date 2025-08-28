@@ -33,7 +33,7 @@ public class LectorEntradas {
     private ConfigDatos constantesConfig;
     
     
-    public LectorEntradas() throws ConfigException{
+    public LectorEntradas() throws ConfigException, IOException{
         this.constantesConfig = new ConfigDatos();
         
         this.constantesConfig.cargarDesdeJson();

@@ -5,11 +5,14 @@
 package com.pablocompany.practicano1lfp.frontend;
 
 import com.pablocompany.practicano1lfp.backDefrontend.ColocarFondos;
+import com.pablocompany.practicano1lfp.backend.ConfigException;
 import com.pablocompany.practicano1lfp.backend.ErrorEncontradoException;
 import com.pablocompany.practicano1lfp.backend.ErrorPuntualException;
 import com.pablocompany.practicano1lfp.backend.LectorEntradas;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 
 /**
@@ -23,10 +26,13 @@ public class EditarConfiguracion extends javax.swing.JDialog {
 
     private LectorEntradas gestionLecturas;
 
+    private JTextPane paneLogAnalisis;
+    private JTextPane paneLogErrores;
+
     /**
      * Creates new form EditarConfiguracion
      */
-    public EditarConfiguracion(java.awt.Frame parent, boolean modal, LectorEntradas gestorLecturas) {
+    public EditarConfiguracion(java.awt.Frame parent, boolean modal, LectorEntradas gestorLecturas, JTextPane paneAnalisis, JTextPane paneLogError) {
         super(parent, modal);
         try {
             initComponents();
@@ -37,6 +43,9 @@ public class EditarConfiguracion extends javax.swing.JDialog {
 
             pintarPanel.pintarDialog("/com/pablocompany/practicano1/target/images/overlay2.png");
 
+            this.paneLogAnalisis = paneAnalisis;
+            this.paneLogErrores = paneLogError;
+
             this.gestionLecturas = gestorLecturas;
             this.hayCambio = false;
 
@@ -45,6 +54,8 @@ public class EditarConfiguracion extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de interpretacion", JOptionPane.ERROR_MESSAGE);
         } catch (BadLocationException ex2) {
             JOptionPane.showMessageDialog(this, ex2.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de apertura archivo", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -76,6 +87,7 @@ public class EditarConfiguracion extends javax.swing.JDialog {
         scrollErroresLog = new javax.swing.JScrollPane();
         textLogConfig = new javax.swing.JTextPane();
         btnGuardar = new javax.swing.JButton();
+        btnReiniciar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Editar Configuracion");
@@ -111,23 +123,34 @@ public class EditarConfiguracion extends javax.swing.JDialog {
             }
         });
 
+        btnReiniciar.setBackground(new java.awt.Color(136, 62, 45));
+        btnReiniciar.setFont(new java.awt.Font("Liberation Sans", 1, 22)); // NOI18N
+        btnReiniciar.setForeground(new java.awt.Color(223, 223, 223));
+        btnReiniciar.setText("Reiniciar por defecto");
+        btnReiniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReiniciarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addGap(360, 360, 360)
-                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelPrincipalLayout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(scrollErroresLog, javax.swing.GroupLayout.PREFERRED_SIZE, 901, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(41, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPrincipalLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(lblEdicionConfig, javax.swing.GroupLayout.PREFERRED_SIZE, 701, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(141, 141, 141))
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(scrollErroresLog, javax.swing.GroupLayout.PREFERRED_SIZE, 901, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addGap(149, 149, 149)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(148, 148, 148))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,10 +158,12 @@ public class EditarConfiguracion extends javax.swing.JDialog {
                 .addGap(8, 8, 8)
                 .addComponent(lblEdicionConfig)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollErroresLog, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+                .addComponent(scrollErroresLog, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27))
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
         );
 
         getContentPane().add(panelPrincipal, java.awt.BorderLayout.CENTER);
@@ -161,7 +186,7 @@ public class EditarConfiguracion extends javax.swing.JDialog {
             return;
         }
 
-        this.hayCambio = true; 
+        this.hayCambio = true;
     }//GEN-LAST:event_textLogConfigKeyReleased
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -170,14 +195,25 @@ public class EditarConfiguracion extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "NO PUEDES BORRAR LA CONFIGURACION PREDETERMINADA\nCIERRE LA VENTANA", "CONFIG EN BLANCO", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         try {
-            if(this.gestionLecturas.getDatosConfig().comprobarEntradas(this.textLogConfig.getText())){
-                System.out.println("todo ok");
+            if (this.gestionLecturas.getDatosConfig().comprobarEntradas(this.textLogConfig.getText())) {
+                this.gestionLecturas.getDatosConfig().guardarCambios();
+                this.gestionLecturas.getDatosConfig().cargarDesdeJson();
+                this.gestionLecturas.analizarEntradas(paneLogAnalisis, paneLogErrores);
+                this.hayCambio = false;
             }
 
         } catch (ErrorEncontradoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Formato incorrecto", JOptionPane.ERROR_MESSAGE);
+        } catch (ErrorPuntualException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de guardado", JOptionPane.ERROR_MESSAGE);
+        } catch (ConfigException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de carga de configuracion", JOptionPane.ERROR_MESSAGE);
+        } catch (BadLocationException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de pintado", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de apertura archivo", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -198,12 +234,40 @@ public class EditarConfiguracion extends javax.swing.JDialog {
 
     }//GEN-LAST:event_formWindowClosing
 
+    private void btnReiniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReiniciarActionPerformed
+
+        try {
+
+            this.gestionLecturas.getDatosConfig().reiniciarPredeterminado(this.textLogConfig);
+            if (this.gestionLecturas.getDatosConfig().comprobarEntradas(this.textLogConfig.getText())) {
+
+                this.gestionLecturas.getDatosConfig().guardarCambios();
+                this.gestionLecturas.getDatosConfig().cargarDesdeJson();
+                this.gestionLecturas.analizarEntradas(paneLogAnalisis, paneLogErrores);
+
+                this.hayCambio = false;
+
+            }
+        } catch (BadLocationException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Formato de escritura incorrecto", JOptionPane.ERROR_MESSAGE);
+        } catch (ConfigException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de carga de configuracion", JOptionPane.ERROR_MESSAGE);
+        } catch (ErrorEncontradoException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Formato incorrecto", JOptionPane.ERROR_MESSAGE);
+        } catch (ErrorPuntualException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de guardado", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de apertura archivo", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnReiniciarActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnReiniciar;
     private javax.swing.JLabel lblEdicionConfig;
     private javax.swing.JPanel panelPrincipal;
     private javax.swing.JScrollPane scrollErroresLog;

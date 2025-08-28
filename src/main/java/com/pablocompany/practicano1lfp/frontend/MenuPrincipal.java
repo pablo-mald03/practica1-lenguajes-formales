@@ -15,6 +15,7 @@ import com.pablocompany.practicano1lfp.backend.LectorEntradas;
 import com.pablocompany.practicano1lfp.backend.ManejadorArchivos;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -76,6 +77,8 @@ public class MenuPrincipal extends javax.swing.JFrame {
             this.leerEntradas = new LectorEntradas();
         } catch (ConfigException ex) {
             System.out.println("Error de Lectura" + ex.getMessage());
+        }catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de apertura archivo", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -118,7 +121,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
     public void modificarConfig() {
         //Se despliega la ventana emergente para editar la configuracion
-        EditarConfiguracion dialog = new EditarConfiguracion(new javax.swing.JFrame(), true, leerEntradas);
+        EditarConfiguracion dialog = new EditarConfiguracion(new javax.swing.JFrame(), true, leerEntradas, textEdicionArchivo, textLogErrores);
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -796,6 +799,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             //Detecta cada vez que se cambia una palabra
             this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
             this.leerEntradas.analizarEntradas(this.textEdicionArchivo, this.textLogErrores);
+            
 
         } catch (AnalizadorLexicoException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error de Ejecucion", JOptionPane.ERROR_MESSAGE);

@@ -4,16 +4,17 @@
  */
 package com.pablocompany.practicano1lfp.backend;
 
-import com.pablocompany.practicano1lfp.backDefrontend.AnalizadorLexicoException;
+
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -27,10 +28,35 @@ import javax.swing.text.StyledDocument;
 //Clase encargada de controlar todos los tokenes necesarios y permitidos
 public class ConfigDatos {
 
+    //DIRECTORIO PRINCIPAL
+    private final String CONFIG_PATH = "configuracion/config.json";
+
     private ArrayList<String> palabrasReservadas = new ArrayList<>();
     private ArrayList<String> operadores = new ArrayList<>();
     private ArrayList<String> puntuacion = new ArrayList<>();
     private ArrayList<String> agrupacion = new ArrayList<>();
+
+    //PATH CONSTANTE QUE PERMITE REINICIAR POR DEFECTO LA CONFIGURACION SI EN DADO CASO YA HAYA SIDO MODIFICADA
+    private final List<String> CONFIG_DEFAULT = new ArrayList<String>() {
+        {
+            add("{");
+            add(" \"palabrasReservadas\": [\"SI\",\"si\",\"ENTONCES\",\"entonces\",\"PARA\",\"para\"],");
+            add("");
+            add(" \"operadores\": [\"+\",\"-\",\"*\",\"/\",\"%\",\"=\"],");
+            add(" \"puntuacion\": [\".\", \",\",\";\",\":\"],");
+            add(" \"agrupacion\": [\"(\",\")\",\"[\",\"]\",\"{\",\"}\"],");
+            add(" \"comentarios\": {");
+            add("   \"linea\": \"//\",");
+            add("   \"bloqueInicio\": \"/*\",");
+            add("   \"bloqueFin\": \"*/\"");
+            add("");
+            add("}");
+            add("");
+            add("");
+            add("");
+            add("}");
+        }
+    };
 
     private Comentarios comments;
 
@@ -76,8 +102,26 @@ public class ConfigDatos {
         return fin.equalsIgnoreCase(this.comments.getBloqueFin());
     }
 
+    // Método para inicializar archivo config.json si no existe
+    private void initConfig() throws IOException {
+        File archivo = new File(CONFIG_PATH);
+
+        if (!archivo.getParentFile().exists()) {
+            archivo.getParentFile().mkdirs();
+        }
+
+        if (!archivo.exists()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+                for (String linea : CONFIG_DEFAULT) {
+                    bw.write(linea);
+                    bw.newLine();
+                }
+            }
+        }
+    }
+
     //Metodo que se encarga de leer y procesar todo a arrayList
-    public void cargarDesdeJson() throws ConfigException {
+    public void cargarDesdeJson() throws ConfigException, IOException {
 
         if (!this.palabrasReservadas.isEmpty()) {
             this.palabrasReservadas.clear();
@@ -93,11 +137,10 @@ public class ConfigDatos {
             this.agrupacion.clear();
         }
 
-        InputStream ruta = getClass().getResourceAsStream("/com/pablocompany/practicano1/target/configuracion/config.json");
-
+        initConfig();
         StringBuilder sb = new StringBuilder();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(ruta))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(CONFIG_PATH))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 sb.append(linea.trim());
@@ -113,7 +156,7 @@ public class ConfigDatos {
             cargarComentarios(json);
 
         } catch (IOException ex) {
-            throw new ConfigException("No se ha podido procesar el config.json");
+            throw new ConfigException("No se ha podido procesar el config.json" + ex.getMessage());
         }
 
     }
@@ -202,23 +245,17 @@ public class ConfigDatos {
 
     //=====================APARTADO DE METODOS QUE SIRVEN PARA PODER MOSTRAR EN LA UI LA CONFIGURACION========================
     //Metodo que permite transformar todo el texto de entrada de config al arreglo 
-    public void mostrarConfiguracion(JTextPane paneLog) throws ErrorPuntualException, BadLocationException {
+    public void mostrarConfiguracion(JTextPane paneLog) throws ErrorPuntualException, BadLocationException, IOException {
 
         if (!this.listaTemporal.isEmpty()) {
             this.listaTemporal.clear();
         }
 
-        InputStream ruta = getClass().getResourceAsStream("/com/pablocompany/practicano1/target/configuracion/config.json");
+       initConfig();
 
-        if (ruta == null) {
-            throw new ErrorPuntualException("La configuracion fue eliminada");
-        }
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(ruta))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(CONFIG_PATH))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-
                 this.listaTemporal.add(linea);
 
             }
@@ -357,20 +394,36 @@ public class ConfigDatos {
     //Metodo que se encarga de mostrar el archivo de configuracion en pantalla
     public void pintarLogConfig(JTextPane paneAnalisis) throws BadLocationException {
 
-        for (int i = 0; i < this.listaTemporal.size(); i++) {
+        if (!paneAnalisis.getText().isBlank()) {
+            limpiarArea(paneAnalisis);
+        }
 
+        for (int i = 0; i < this.listaTemporal.size(); i++) {
             String palabra = this.listaTemporal.get(i);
 
-            for (int j = 0; j < palabra.length(); j++) {
+            boolean dentroComillas = false;
 
+            for (int j = 0; j < palabra.length(); j++) {
                 char caracter = palabra.charAt(j);
 
-                insertarPalabra(String.valueOf(caracter), new Color(0x297318), paneAnalisis);
+                // si es comilla, alternamos el estado
+                if (caracter == '"') {
+                    dentroComillas = !dentroComillas;
+                    insertarPalabra(String.valueOf(caracter), Color.BLUE, paneAnalisis); // comillas azules por ejemplo
+                    continue;
+                }
 
+                if (dentroComillas) {
+                    // todo lo que está dentro de comillas, lo pintamos del mismo color
+                    insertarPalabra(String.valueOf(caracter), new Color(0x297318), paneAnalisis);
+                } else {
+                    // fuera de comillas, analizamos el carácter
+                    Color color = obtenerColorPorCaracter(caracter);
+                    insertarPalabra(String.valueOf(caracter), color, paneAnalisis);
+                }
             }
 
             insertarPalabra("\n", Color.BLACK, paneAnalisis);
-
         }
 
         paneAnalisis.setCaretPosition(0);
@@ -378,7 +431,7 @@ public class ConfigDatos {
     }
 
     // Método que mapea el token a su color
-    private Color obtenerColorPorToken(char tipo) {
+    private Color obtenerColorPorCaracter(char tipo) {
         switch (tipo) {
             case '{':
             case '}':
@@ -386,7 +439,10 @@ public class ConfigDatos {
             case '[':
             case ']':
                 return new Color(0x6B4627);
-
+            case ':':
+                return new Color(0xFF00FF);
+            case ',':
+                return new Color(0x999999);
             default:
                 return new Color(0x9E7A7A);
         }
@@ -411,7 +467,41 @@ public class ConfigDatos {
 
     }
 
+    //Metodo que permite reiniciar a los ajustes por defecto el config
+    public void reiniciarPredeterminado(JTextPane paneConfig) throws BadLocationException {
+
+        if (!this.listaTemporal.isEmpty()) {
+            this.listaTemporal.clear();
+        }
+
+        this.palabrasReservadas.clear();
+        this.operadores.clear();
+        this.puntuacion.clear();
+        this.agrupacion.clear();
+
+        for (String reinicio : CONFIG_DEFAULT) {
+            this.listaTemporal.add(reinicio);
+        }
+
+        pintarLogConfig(paneConfig);
+
+    }
+
+    //METODO UNICO QUE PERMITE SETEAR EL ARCHIVO CONFIG PARA ESCRIBIR EN EL LOS NUEVOS CAMBIOS
+    public void guardarCambios() throws ErrorPuntualException {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(CONFIG_PATH))) {
+
+            for (String linea : this.listaTemporal) {
+                bw.write(linea);
+                bw.newLine(); // salto de línea para mantener el formato
+            }
+
+        } catch (IOException ex) {
+            throw new ErrorPuntualException("No se ha podido guardar la configuración en " + CONFIG_PATH);
+        }
+
+    }
+
+    //=====================FIN DEL APARTADO DE METODOS QUE SIRVEN PARA PODER MOSTRAR EN LA UI LA CONFIGURACION====================
 }
-
-//=====================FIN DEL APARTADO DE METODOS QUE SIRVEN PARA PODER MOSTRAR EN LA UI LA CONFIGURACION====================
-
