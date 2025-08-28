@@ -61,6 +61,11 @@ public class AnalizadorLexico {
 
     }
 
+    //Metodo que permite que se pueda acceder a la lista sentencias
+    public ArrayList<Sentencia> getListadoSentencias(){
+        return this.listaSentencias;
+    }
+    
     //Metodo que permite inicializar la separacion de lexemas FINALIZADO
     public void descomponerLexemas(JTextPane pane) throws BadLocationException {
 

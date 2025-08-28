@@ -35,12 +35,15 @@ public class LectorEntradas {
     
     private ConfigDatos constantesConfig;
     
+    private GenerarReportes generacionReportes;
+    
     
     public LectorEntradas() throws ConfigException, IOException{
         this.constantesConfig = new ConfigDatos();
         
         this.constantesConfig.cargarDesdeJson();
         this.lexerActual = new GestorLexer();
+        this.generacionReportes = new GenerarReportes();
     }
     
     //------------------Fin de la Subregion de gramatica extraidas del config.json----------------------------
@@ -139,6 +142,11 @@ public class LectorEntradas {
         }
         
         return null;
+    }
+    
+    //Metodo utilizado para obtener la instancia y generar el reporte 
+    public GenerarReportes getGenerarReportes(){
+        return this.generacionReportes;
     }
 
 }

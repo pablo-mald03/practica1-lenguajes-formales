@@ -121,7 +121,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la configuracion de instrucciones
     public void modificarConfig() {
         //Se despliega la ventana emergente para editar la configuracion
-        EditarConfiguracion dialog = new EditarConfiguracion(new javax.swing.JFrame(), true, leerEntradas, textEdicionArchivo, textLogErrores);
+        EditarConfiguracion dialog = new EditarConfiguracion(this, true, leerEntradas, textEdicionArchivo, textLogErrores);
         dialog.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
@@ -143,6 +143,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
     //Metodo que se utiliza para manejar todos los componentes y funciones previas a la generacion de reportes
     public void operarReportes() {
         //Se despliega la ventana emergente para La generacion de reportes
+        MostrarReportes dialog = new MostrarReportes(this, true, leerEntradas);
+        dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+
+                if (gestionVentanas == 0) {
+                    regresarInicio();
+                }
+
+                if (gestionVentanas == 1) {
+                    mostrarBusquedas();
+                }
+
+            }
+        });
+        dialog.setVisible(true);
 
     }
 
@@ -217,11 +233,10 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelMedio.cambiarLabel(iconoMedio);
         this.lblEleccionesDadas.setText("Generar Reportes");
 
-        operarReportes();
-
         this.btnBusquedaPatrones.setBackground(new Color(0x323844));
         this.btnConfig.setBackground(new Color(0x323844));
         this.btnGenerarReportes.setBackground(new Color(0x2DB20C));
+        operarReportes();
 
     }
 
@@ -749,12 +764,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         // Si el usuario presiona "Cancelar" o deja vacío
         if (entrada == null || entrada.trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "No puedes dejarlo en blanco. Intenta de nuevo.");
-            return pedirNombre(mensaje); 
+            return pedirNombre(mensaje);
         }
 
-        return entrada.trim().replace(" ", "_"); 
+        return entrada.trim().replace(" ", "_");
     }
-    
+
     private void btnGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarArchivoActionPerformed
         //EJECUTA LAS ACCIONES RESPECTIVAS PARA PODER GUARDAR UN ARCHIVO
 
@@ -772,12 +787,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
                     this.leerEntradas.transformarTexto(this.textEdicionArchivo.getText(), this.textEdicionArchivo);
 
                     ArrayList<String> lista = this.leerEntradas.getListado();
-                    
+
                     String nombreArchivo = pedirNombre("Escriba el nombre del archivo a exportar\nNo deje el espacio vacio");
 
-                    this.manipuladorDirectorios.exportarArchivoCreado(path, lista,nombreArchivo);
-                    
-                    JOptionPane.showMessageDialog(this,"Archivo exportado correctamente", "Archivo exportado", JOptionPane.INFORMATION_MESSAGE);
+                    this.manipuladorDirectorios.exportarArchivoCreado(path, lista, nombreArchivo);
+
+                    JOptionPane.showMessageDialog(this, "Archivo exportado correctamente", "Archivo exportado", JOptionPane.INFORMATION_MESSAGE);
 
                     return;
                 }
