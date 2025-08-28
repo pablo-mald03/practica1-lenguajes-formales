@@ -769,23 +769,21 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No hay texto procesado\nPrimero escriba patrones para poder buscarlos", "Texto de busqueda Vacio", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
-            
+
             try {
-                lexer.busquedaPatrones(this.txtLogBusquedas, this.txtBusquedas.getText());
-                
+                lexer.busquedaPatrones(this.txtLogBusquedas, this.txtBusquedas.getText().trim().split(" "));
+
             } catch (BadLocationException ex) {
                 JOptionPane.showMessageDialog(this, "No se ha podido imprimir el texto de busqueda", "Error de pintado", JOptionPane.INFORMATION_MESSAGE);
-                
+
             } catch (ErrorEncontradoException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Texto de busqueda Vacio", JOptionPane.INFORMATION_MESSAGE);
-                
+
             } catch (ErrorPuntualException ex1) {
                 JOptionPane.showMessageDialog(this, ex1.getMessage(), "Patron no Encontrado", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }
-
-        //PENDIENTE LOGICA DE GUARDADO
 
     }//GEN-LAST:event_btnGuardarArchivoActionPerformed
 

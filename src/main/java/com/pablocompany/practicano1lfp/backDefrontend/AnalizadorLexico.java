@@ -182,7 +182,7 @@ public class AnalizadorLexico {
 
         }
 
-        pintarLogSalida(this.areaAnalisis,true);
+        pintarLogSalida(this.areaAnalisis, true);
 
     }
 
@@ -350,8 +350,8 @@ public class AnalizadorLexico {
     //True refresca todo el log con el lexer
     //False no hace nada porque esta en busquedas
     private void mostrarErrores(boolean enAnalisis) {
-        
-        if(!enAnalisis){
+
+        if (!enAnalisis) {
             return;
         }
 
@@ -424,9 +424,9 @@ public class AnalizadorLexico {
     }
 
     //===========================APARTADO PARA GESTIONAR LAS BUSQUEDAS EN EL TEXTO========================================
-    public void busquedaPatrones(JTextPane paneBusqueda, String palabraBuscada) throws BadLocationException, ErrorEncontradoException, ErrorPuntualException {
+    public void busquedaPatrones(JTextPane paneBusqueda, String [] palabraBuscada) throws BadLocationException, ErrorEncontradoException, ErrorPuntualException {
 
-        pintarLogSalida(paneBusqueda,false);
+        pintarLogSalida(paneBusqueda, false);
 
         if (this.listaSentencias.isEmpty()) {
             throw new ErrorEncontradoException("El texto esta vacio");
@@ -436,10 +436,23 @@ public class AnalizadorLexico {
         highlighter.removeAllHighlights();
 
         //Variable importante para saber si minimo hay una coincidencia
-        boolean hayCoincidencia = false; 
+        boolean hayCoincidencia = false;
         
-        boolean yaEncontrado = false;
-        for (int i = 0; i < this.listaSentencias.size(); i++) {
+        for (int i = 0; i < palabraBuscada.length; i++) {
+            String patron = palabraBuscada[i];
+        
+            hayCoincidencia = busquedaSofisticada(patron, paneBusqueda);
+        
+        }
+
+        
+        //busqueda sofisticada para encontrar cualquier palabra
+        if (hayCoincidencia) {
+            return;
+        }
+        
+        //BUSQUEDA SIMPLE DE MATCH RAPIDO
+        /*for (int i = 0; i < this.listaSentencias.size(); i++) {
             Sentencia sentenciaBuscada = this.listaSentencias.get(i);
 
             for (int j = 0; j < sentenciaBuscada.limiteLexemas(); j++) {
@@ -447,7 +460,6 @@ public class AnalizadorLexico {
                 Lexema lexemaActual = sentenciaBuscada.getListaLexema(j);
 
                 if (lexemaActual.getLexema().equals(palabraBuscada)) {
-                    yaEncontrado = true;
                     hayCoincidencia = true;
 
                     int fila = lexemaActual.getFilaCoordenada() - 1;
@@ -471,21 +483,65 @@ public class AnalizadorLexico {
             }
 
         }
-        
-        if(yaEncontrado){
-            System.out.println("Ya no sigue");
-            return;
+        */
+        //busqueda sofisticada para encontrar cualquier palabra
+        if (!hayCoincidencia) {
+            throw new ErrorPuntualException("No existen patrones relacionados");
         }
-        
-        
-        
-        
-        
-        if(!hayCoincidencia){
-             throw new ErrorPuntualException("No existen patrones relacionados");
+
+    }
+
+    private boolean busquedaSofisticada(String palabraBuscada, JTextPane paneBusqueda) throws BadLocationException {
+        boolean encontrado = false;
+        for (int i = 0; i < this.listaSentencias.size(); i++) {
+            Sentencia sentenciaBuscada = this.listaSentencias.get(i);
+
+            for (int j = 0; j < sentenciaBuscada.limiteLexemas(); j++) {
+                Lexema lexemaActual = sentenciaBuscada.getListaLexema(j);
+
+                // Recorremos caracter por caracter
+                for (int k = 0; k <= lexemaActual.getLongitudNodo() - palabraBuscada.length(); k++) {
+
+                    boolean match = true;
+
+                    for (int m = 0; m < palabraBuscada.length(); m++) {
+                        Nodo nodoActual = lexemaActual.getValorNodo(k + m);
+                        char caracter = nodoActual.getCaracter();
+
+                        if (caracter != palabraBuscada.charAt(m)) {
+                            match = false;
+                            break;
+                        }
+                    }
+
+                    if (match) {
+                        // Coordenadas exactas
+                        Nodo nodoInicio = lexemaActual.getValorNodo(k);
+                        Nodo nodoFin = lexemaActual.getValorNodo(k + palabraBuscada.length() - 1);
+
+                        int fila = nodoInicio.getLinea() - 1;
+                        if (fila < 0) {
+                            fila = 0;
+                        }
+
+                        int columnaInicio = nodoInicio.getColumna() - 1;
+                        if (columnaInicio < 0) {
+                            columnaInicio = 0;
+                        }
+
+                        int columnaFin = nodoFin.getColumna();
+                        if (columnaFin < 0) {
+                            columnaFin = 0;
+                        }
+
+                        resaltar(paneBusqueda, fila, columnaInicio, columnaFin);
+                        encontrado = true;
+                    }
+                }
+            }
         }
-        
-        
+
+        return encontrado;
 
     }
 
