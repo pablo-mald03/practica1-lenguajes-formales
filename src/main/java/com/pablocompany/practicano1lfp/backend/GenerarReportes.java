@@ -480,11 +480,18 @@ public class GenerarReportes {
 
     //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
     public void generarReporteSinErroresTokens() throws ErrorPuntualException {
+        if (this.listadoTokens.isEmpty()) {
+            throw new ErrorPuntualException("No hay reporte de Cantidad de Tokens cargado aun\nGenere primero el reporte para poder exportarlo");
+        }
         reportarSinErroresCSV(this.listadoTokens, "ReporteCantidadLexemas", "Lexema,Tipo_Token,Cantidad", "Cantidad de Tokens");
     }
 
     //Metodo que permite comunicar a la UI con la interaccion para generar reporte de errores
     public void generarReporteSinErroresLexemas() throws ErrorPuntualException {
+         if (this.listadoLexemas.isEmpty()) {
+            throw new ErrorPuntualException("No hay reporte de Lexemas cargado aun\nGenere primero el reporte para poder exportarlo");
+        }
+        
         reportarSinErroresCSV(this.listadoLexemas, "ReporteLexemas", "Nombre_Token,Lexema,Posicion", "Lexemas");
     }
 
@@ -528,10 +535,6 @@ public class GenerarReportes {
 
     //Metodo que permite exportar .csv de los errores
     public void reportarSinErroresCSV(ArrayList<String> lista, String nombreArchivo, String headersArchivo, String nombramiento) throws ErrorPuntualException {
-
-        if (this.listadoLexemas.isEmpty()) {
-            throw new ErrorPuntualException("No hay reporte de " + nombramiento + " cargado aun\nGenere primero el reporte para poder exportarlo");
-        }
 
         if (this.hayErrores) {
             throw new ErrorPuntualException("Hay errores registrados en el analisis\nNo puedes exportar el reporte");
